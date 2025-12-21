@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+.env*
+hono-project
+test
+coverage
+.vscode
+.idea
+*.log
