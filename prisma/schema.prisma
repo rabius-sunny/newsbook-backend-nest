@@ -155,9 +155,9 @@ model Article {
   updatedAt     DateTime  @updatedAt
 
   // Relations
-  language     Language             @relation(fields: [languageId], references: [id])
-  category     Category?            @relation(fields: [categoryId], references: [id])
-  author       User?                @relation(fields: [authorId], references: [id])
+  language     Language             @relation(fields: [languageId], references: [id], onDelete: Restrict)
+  category     Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  author       User?                @relation(fields: [authorId], references: [id], onDelete: SetNull)
   tags         ArticleTag[]
   comments     Comment[]
   translations ArticleTranslation[]
@@ -298,4 +298,20 @@ model Gallery {
   @@index([type])
   @@index([createdAt])
   @@map("gallery")
+}
+
+// Audit logs for tracking changes
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  action     String // 'create', 'update', 'delete', 'publish'
+  entityType String // 'article', 'category', 'user'
+  entityId   Int
+  identity   String? // IP address and user agent
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }
