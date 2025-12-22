@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:17.4-alpine3.21
+    container_name: grate-bangla-postgres-dev
+    env_file:
+      - .env
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d newspaper']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - grate-bangla-network
+
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: development
+  #   container_name: grate-bangla-api-dev
+  #   environment:
+  #     NODE_ENV: development
+  #     DATABASE_URL: ${DATABASE_URL}
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - grate-bangla-network
+  #   command: pnpm run start:dev
+
+networks:
+  grate-bangla-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

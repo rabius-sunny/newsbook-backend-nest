@@ -1,4 +1,10 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
@@ -10,17 +16,21 @@ export class PrismaService
 {
   private pool: Pool;
 
-  constructor() {
-    const connectionString =
-      process.env.DATABASE_URL ||
-      'postgresql://postgres:postgres@localhost:5433/newspaper';
+  constructor(@Inject(ConfigService) configService: ConfigService) {
+    const connectionString = configService.get<string>('DATABASE_URL');
+    const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+
+    if (!connectionString) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+
     const pool = new Pool({ connectionString });
     const adapter = new PrismaPg(pool);
 
     super({
       adapter,
       log:
-        process.env.NODE_ENV === 'development'
+        nodeEnv === 'development'
           ? ['query', 'info', 'warn', 'error']
           : ['error'],
     });

@@ -256,12 +256,3 @@ Always assume:
 Act accordingly.
 
 ---
-
-# Instruction for the honojs project
-
-we've to convert an existing honojs project to nestjs following the above instructions. the path for the hono project is at `hono-project` directory.
-
-- Analyze the honojs project and completely convert it to nestjs following the above instructions.
-- Ensure all functionalities are preserved and the new code adheres to NestJS best practices.
-- Convert the drizzle ORM usage in honojs to Prisma ORM in NestJS with preserving all database interactions and relationships, schemas and indexes.
-- Use Zod for all DTO validations as specified above using the existing zod validation logic from honojs.
