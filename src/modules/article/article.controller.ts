@@ -58,13 +58,20 @@ export class ArticleController {
   }
 
   @Get('slug/:slug')
-  async getArticleBySlug(@Param('slug') slug: string) {
-    const article = await this.articleService.getArticleBySlug(slug);
+  async getArticleBySlug(
+    @Param('slug') slug: string,
+    @Query('lang') lang?: string,
+  ) {
+    const article = await this.articleService.getArticleBySlugAndLanguage(
+      slug,
+      lang,
+    );
     // Increment view count
     await this.articleService.incrementViewCount(article.id);
     return article;
   }
 
+  // Keep the route param version for backward compatibility
   @Get('slug/:slug/lang/:language')
   async getArticleBySlugAndLanguage(
     @Param('slug') slug: string,

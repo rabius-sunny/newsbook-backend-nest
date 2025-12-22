@@ -72,12 +72,6 @@ export interface ArticleListItem {
   tags: ArticleTagItem[];
 }
 
-// Available language info for translations
-export interface AvailableLanguage {
-  code: string;
-  isOriginal: boolean;
-}
-
 // Article with all relations (full detail)
 export interface ArticleWithRelations extends Article {
   category: Category | null;
@@ -87,13 +81,6 @@ export interface ArticleWithRelations extends Article {
     comments: number;
     views: number;
   };
-}
-
-// Article with translation info
-export interface ArticleWithTranslations extends ArticleWithRelations {
-  requestedLanguage?: string;
-  availableLanguages?: AvailableLanguage[];
-  isTranslation?: boolean;
 }
 
 // Article filters for querying

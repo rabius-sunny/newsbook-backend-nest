@@ -18,7 +18,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/articles?page=1&limit=10&status=published&featured=true&sortBy=publishedAt&sortOrder=desc",
+          "raw": "{{baseUrl}}/articles?page=1&limit=10&status=published&featured=true&sortBy=publishedAt&sortOrder=desc&lang=en",
           "host": ["{{baseUrl}}"],
           "path": ["articles"],
           "query": [
@@ -45,6 +45,11 @@
             {
               "key": "sortOrder",
               "value": "desc"
+            },
+            {
+              "key": "lang",
+              "value": "en",
+              "description": "Filter by language code (e.g., 'en', 'bn')"
             }
           ]
         }
@@ -113,7 +118,7 @@
       "response": []
     },
     {
-      "name": "Get Article By Slug",
+      "name": "Get Article By Slug (Original Language)",
       "request": {
         "method": "GET",
         "header": [],
@@ -121,12 +126,33 @@
           "raw": "{{baseUrl}}/articles/slug/election-updates-2025",
           "host": ["{{baseUrl}}"],
           "path": ["articles", "slug", "election-updates-2025"]
+        },
+        "description": "Fetches article in its original/primary language. No translation lookup is performed."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Article By Slug With Language Query",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/slug/election-updates-2025?lang=bn",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "slug", "election-updates-2025"],
+          "query": [
+            {
+              "key": "lang",
+              "value": "bn",
+              "description": "Optional language code (e.g., 'en', 'bn'). Returns translated content if available, otherwise original article."
+            }
+          ]
         }
       },
       "response": []
     },
     {
-      "name": "Get Article By Slug And Language",
+      "name": "Get Article By Slug And Language (Route Param)",
       "request": {
         "method": "GET",
         "header": [],
@@ -134,7 +160,8 @@
           "raw": "{{baseUrl}}/articles/slug/election-updates-2025/lang/bn",
           "host": ["{{baseUrl}}"],
           "path": ["articles", "slug", "election-updates-2025", "lang", "bn"]
-        }
+        },
+        "description": "Alternative route with language as path parameter. Returns translated content if available."
       },
       "response": []
     },

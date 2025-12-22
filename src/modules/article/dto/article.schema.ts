@@ -127,6 +127,7 @@ export const articleQuerySchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional(),
   tags: z.string().optional(), // comma-separated tag ids
+  lang: z.string().min(2).max(5).optional(), // language code filter (e.g., 'en', 'bn')
 });
 
 // Translation schema for adding/updating article translations

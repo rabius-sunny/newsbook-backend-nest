@@ -12,8 +12,6 @@ import type {
 import type {
   ArticleListItem,
   ArticleWithRelations,
-  ArticleWithTranslations,
-  AvailableLanguage,
   PaginatedArticles,
 } from './types';
 
@@ -29,6 +27,18 @@ export class ArticleService {
 
     // Build filter conditions
     const filters = this.buildFilters(query);
+
+    // Handle language filtering
+    let languageId: number | undefined;
+    if (query.lang) {
+      const language = await this.prisma.language.findUnique({
+        where: { code: query.lang },
+        select: { id: true },
+      });
+      if (language) {
+        languageId = language.id;
+      }
+    }
 
     // Build orderBy
     const sortBy = query.sortBy ?? 'publishedAt';
@@ -69,6 +79,7 @@ export class ArticleService {
     const where: Prisma.ArticleWhereInput = {
       ...filters,
       ...(articleIds ? { id: { in: articleIds } } : {}),
+      ...(languageId ? { languageId } : {}),
     };
 
     const [articles, total] = await Promise.all([
@@ -199,16 +210,77 @@ export class ArticleService {
     };
   }
 
-  // Get article by slug and language (using articleTranslations)
+  // Get article by slug and optional language
   async getArticleBySlugAndLanguage(
     slug: string,
-    languageCode: string,
-  ): Promise<ArticleWithTranslations> {
-    // First, get the primary article by slug
-    const primaryArticle = await this.prisma.article.findUnique({
+    languageCode?: string,
+  ): Promise<ArticleWithRelations> {
+    // If no language code provided, return the article in its original language (no translation lookup)
+    if (!languageCode) {
+      const article = await this.prisma.article.findUnique({
+        where: { slug },
+        include: {
+          category: true,
+          author: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              bio: true,
+              avatar: true,
+              role: true,
+              createdAt: true,
+            },
+          },
+          tags: {
+            include: {
+              tag: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  isActive: true,
+                  createdAt: true,
+                },
+              },
+            },
+          },
+          _count: {
+            select: { comments: true },
+          },
+        },
+      });
+
+      if (!article) {
+        throw new NotFoundException('Article with this slug does not exist');
+      }
+
+      return {
+        ...article,
+        author: article.author as ArticleWithRelations['author'],
+        tags: article.tags.map((at) => at.tag),
+        _count: {
+          comments: article._count.comments,
+          views: article.viewCount,
+        },
+      };
+    }
+
+    // Language code provided - lookup the language first
+    const language = await this.prisma.language.findUnique({
+      where: { code: languageCode },
+      select: { id: true, code: true },
+    });
+
+    if (!language) {
+      throw new NotFoundException(`Language '${languageCode}' not found`);
+    }
+
+    // Fetch article with only the needed translation
+    const article = await this.prisma.article.findUnique({
       where: { slug },
       include: {
-        language: { select: { code: true } },
+        language: { select: { id: true, code: true } },
         category: true,
         author: {
           select: {
@@ -235,8 +307,14 @@ export class ArticleService {
           },
         },
         translations: {
-          include: {
-            language: { select: { code: true } },
+          where: { languageId: language.id }, // Only fetch the requested translation
+          select: {
+            title: true,
+            excerpt: true,
+            content: true,
+            location: true,
+            seo: true,
+            languageId: true,
           },
         },
         _count: {
@@ -245,54 +323,32 @@ export class ArticleService {
       },
     });
 
-    if (!primaryArticle) {
+    if (!article) {
       throw new NotFoundException('Article with this slug does not exist');
     }
 
-    const primaryLanguageCode = primaryArticle.language.code;
-
-    // Get available languages
-    const availableLanguages: AvailableLanguage[] = [
-      { code: primaryLanguageCode, isOriginal: true },
-      ...primaryArticle.translations.map((t) => ({
-        code: t.language.code,
-        isOriginal: false,
-      })),
-    ];
-
     // Base article data
     const baseArticle = {
-      ...primaryArticle,
-      author: primaryArticle.author as ArticleWithRelations['author'],
-      tags: primaryArticle.tags.map((at) => at.tag),
+      ...article,
+      author: article.author as ArticleWithRelations['author'],
+      tags: article.tags.map((at) => at.tag),
       _count: {
-        comments: primaryArticle._count.comments,
-        views: primaryArticle.viewCount,
+        comments: article._count.comments,
+        views: article.viewCount,
       },
-      availableLanguages,
     };
 
     // If requesting the primary language, return the original article
-    if (languageCode === primaryLanguageCode) {
-      return {
-        ...baseArticle,
-        requestedLanguage: languageCode,
-        isTranslation: false,
-      };
+    if (article.language.code === languageCode) {
+      return baseArticle;
     }
 
-    // Look for translation in the requested language
-    const translation = primaryArticle.translations.find(
-      (t) => t.language.code === languageCode,
-    );
+    // Check if translation exists (we fetched only the needed one)
+    const translation = article.translations[0];
 
     if (!translation) {
-      // No translation available, return primary article with note
-      return {
-        ...baseArticle,
-        requestedLanguage: languageCode,
-        isTranslation: false,
-      };
+      // No translation available, return primary article
+      return baseArticle;
     }
 
     // Translation found, merge translated content
@@ -301,11 +357,9 @@ export class ArticleService {
       title: translation.title,
       excerpt: translation.excerpt,
       content: translation.content,
-      location: translation.location || primaryArticle.location,
+      location: translation.location || article.location,
       languageId: translation.languageId,
-      seo: translation.seo || primaryArticle.seo,
-      requestedLanguage: languageCode,
-      isTranslation: true,
+      seo: translation.seo || article.seo,
     };
   }
 
