@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Set global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   // Enable CORS
   app.enableCors();
@@ -27,11 +27,11 @@ async function bootstrap() {
     .addTag('newsbook')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('api/v1', app, documentFactory);
 
   const port = process.env.PORT;
   await app.listen(port!);
 
-  console.log(`Application is running on: http://localhost:${port}/api`);
+  console.log(`Application is running on: http://localhost:${port}/api/v1`);
 }
 bootstrap();

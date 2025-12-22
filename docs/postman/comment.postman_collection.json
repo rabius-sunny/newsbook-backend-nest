@@ -1,0 +1,149 @@
+{
+  "info": {
+    "name": "Comment Module",
+    "_postman_id": "1a91e9ef-366f-4a20-b5f1-8725e0d927eb",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Comments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/comments?page=1&limit=20&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "20"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Comments By Article",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/comments/article/1?page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments", "article", "1"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Comment Count By Article",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/comments/article/1/count",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments", "article", "1", "count"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Comment By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/comments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Comment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"articleId\": 1,\n  \"authorName\": \"Jane Doe\",\n  \"authorEmail\": \"jane.doe@example.com\",\n  \"content\": \"This article provides a clear overview of the current situation.\",\n  \"ipAddress\": \"203.0.113.42\",\n  \"userAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/comments",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Comment",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"Updated comment after additional details became available.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/comments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Comment",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/comments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["comments", "1"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

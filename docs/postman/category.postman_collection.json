@@ -1,0 +1,152 @@
+{
+  "info": {
+    "name": "Category Module",
+    "_postman_id": "13a79f5d-3850-4f63-b3e4-bec4277f2fb9",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Categories",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories?page=1&limit=20&active=true",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "20"
+            },
+            {
+              "key": "active",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Category Tree",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/tree",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories", "tree"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Category By Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/slug/politics",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories", "slug", "politics"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Category By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Category Children",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/1/children",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories", "1", "children"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Politics\",\n  \"description\": \"National and local political news\",\n  \"image\": \"https://cdn.example.com/categories/politics.png\",\n  \"names\": {\n    \"bn\": \"রাজনীতি\"\n  },\n  \"descriptions\": {\n    \"bn\": \"জাতীয় ও স্থানীয় রাজনৈতিক খবর\"\n  },\n  \"slug\": \"politics\",\n  \"parentId\": null,\n  \"displayOrder\": 1,\n  \"isActive\": true,\n  \"seo\": {\n    \"title\": \"Politics News\",\n    \"description\": \"Latest updates on Bangladeshi politics\",\n    \"keywords\": \"politics,election,bangladesh\"\n  },\n  \"meta\": {\n    \"color\": \"#004aad\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/categories",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Category",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Politics & Policy\",\n  \"isActive\": true,\n  \"displayOrder\": 2\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/categories/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Category",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["categories", "1"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

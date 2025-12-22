@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "Language Module",
+    "_postman_id": "8122b6d3-f0df-4f87-8ffa-4876cc2d0b1a",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Active Languages",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Default Language",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages/default",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages", "default"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Language By Code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages/code/en",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages", "code", "en"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Language By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Language",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"code\": \"bn\",\n  \"name\": \"Bangla\",\n  \"direction\": \"ltr\",\n  \"isDefault\": false,\n  \"isActive\": true,\n  \"meta\": {\n    \"flag\": \"BD\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/languages",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Language",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bangla (Bangladesh)\",\n  \"isActive\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/languages/2",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages", "2"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Language",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages/3",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages", "3"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Set Default Language",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/languages/2/default",
+          "host": ["{{baseUrl}}"],
+          "path": ["languages", "2", "default"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

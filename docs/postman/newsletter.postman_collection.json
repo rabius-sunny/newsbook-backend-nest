@@ -1,0 +1,183 @@
+{
+  "info": {
+    "name": "Newsletter Module",
+    "_postman_id": "b09c6361-ec6b-4bce-ae01-d32819cf3ec7",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Newsletters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/newsletters?page=1&limit=25&isActive=true",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            },
+            {
+              "key": "isActive",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Newsletter Subscriber Count",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/count",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "count"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Newsletter By Email",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/email/john.doe@example.com",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "email", "john.doe@example.com"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Newsletter By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Subscribe To Newsletter",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"name\": \"John Doe\",\n  \"preferences\": {\n    \"frequency\": \"weekly\",\n    \"topics\": [\"politics\", \"sports\"]\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/subscribe",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "subscribe"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Newsletter Subscription",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Johnathan Doe\",\n  \"preferences\": {\n    \"frequency\": \"daily\",\n    \"topics\": [\"breaking\"]\n  },\n  \"isActive\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Unsubscribe From Newsletter",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/unsubscribe",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "unsubscribe"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Verify Newsletter Email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/verify",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "verify"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Newsletter Subscription",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/newsletters/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["newsletters", "1"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

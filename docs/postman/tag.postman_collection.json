@@ -1,0 +1,157 @@
+{
+  "info": {
+    "name": "Tag Module",
+    "_postman_id": "0f5f2e96-5ced-4eea-96c7-c365944341a0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Tags",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tags?page=1&limit=25&q=politics&active=true&sortBy=name&sortOrder=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            },
+            {
+              "key": "q",
+              "value": "politics"
+            },
+            {
+              "key": "active",
+              "value": "true"
+            },
+            {
+              "key": "sortBy",
+              "value": "name"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Popular Tags",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tags/popular?limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags", "popular"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Tag By Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tags/slug/national-politics",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags", "slug", "national-politics"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Tag By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tags/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Tag",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"National Politics\",\n  \"slug\": \"national-politics\",\n  \"isActive\": true,\n  \"meta\": {\n    \"color\": \"#ff5733\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tags",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Tag",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Politics\",\n  \"isActive\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tags/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Tag",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tags/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["tags", "1"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

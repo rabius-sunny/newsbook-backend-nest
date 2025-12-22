@@ -1,0 +1,282 @@
+{
+  "info": {
+    "name": "Article Module",
+    "_postman_id": "6dca760c-437d-403e-9d4d-6d1c7de8a072",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Articles",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles?page=1&limit=10&status=published&featured=true&sortBy=publishedAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "status",
+              "value": "published"
+            },
+            {
+              "key": "featured",
+              "value": "true"
+            },
+            {
+              "key": "sortBy",
+              "value": "publishedAt"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Featured Articles",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/featured?limit=5",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "featured"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Breaking News",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/breaking?limit=3",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "breaking"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Articles By Category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/category/politics?page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "category", "politics"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Article By Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/slug/election-updates-2025",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "slug", "election-updates-2025"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Article By Slug And Language",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/slug/election-updates-2025/lang/bn",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "slug", "election-updates-2025", "lang", "bn"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Article By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Article",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Election Updates 2025\",\n  \"slug\": \"election-updates-2025\",\n  \"excerpt\": \"Key developments from the national election campaign.\",\n  \"content\": {\n    \"blocks\": [\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Today the election commission announced new guidelines.\"\n      }\n    ]\n  },\n  \"languageId\": 1,\n  \"featuredImage\": \"https://cdn.example.com/images/election.jpg\",\n  \"imageCaption\": \"Supporters rallying downtown\",\n  \"gallery\": [\"https://cdn.example.com/images/election-1.jpg\", \"https://cdn.example.com/images/election-2.jpg\"],\n  \"categoryId\": 2,\n  \"authorId\": 5,\n  \"status\": \"published\",\n  \"isPublished\": true,\n  \"publishedAt\": \"2025-01-15T08:00:00.000Z\",\n  \"isFeatured\": true,\n  \"isBreaking\": false,\n  \"priority\": 3,\n  \"location\": \"Dhaka\",\n  \"source\": \"Election Commission\",\n  \"seo\": {\"title\": \"Election Updates 2025\", \"description\": \"Latest election headlines\"},\n  \"meta\": {\"readingTime\": 6},\n  \"tagIds\": [1, 4, 9]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/articles",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Article",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Election Updates 2025 (Evening Edition)\",\n  \"isFeatured\": false,\n  \"priority\": 4\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/articles/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Article",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Increment Article View Count",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/1/view",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1", "view"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Article Translation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"languageId\": 2,\n  \"title\": \"নির্বাচন আপডেট ২০২৫\",\n  \"excerpt\": \"জাতীয় নির্বাচনের সর্বশেষ খবর।\",\n  \"content\": {\n    \"blocks\": [\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"আজ নির্বাচন কমিশন নতুন নির্দেশনা ঘোষণা করেছে।\"\n      }\n    ]\n  },\n  \"location\": \"ঢাকা\",\n  \"seo\": {\"title\": \"নির্বাচন আপডেট ২০২৫\"}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/articles/1/translations",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1", "translations"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Article Translation",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"excerpt\": \"জাতীয় নির্বাচনের আপডেট সংক্ষেপ।\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/articles/1/translations/2",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1", "translations", "2"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Article Translation",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/articles/1/translations/2",
+          "host": ["{{baseUrl}}"],
+          "path": ["articles", "1", "translations", "2"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

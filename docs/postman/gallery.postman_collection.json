@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "Gallery Module",
+    "_postman_id": "a08b7471-42e1-4e8f-8f43-262dc1abd14a",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Gallery Items",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/gallery?page=1&limit=12&type=image",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "12"
+            },
+            {
+              "key": "type",
+              "value": "image"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Gallery Counts By Type",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/gallery/count",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery", "count"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Gallery Item By File ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/gallery/file/upload_abc123",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery", "file", "upload_abc123"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Gallery Item By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/gallery/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Gallery Item",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fileId\": \"upload_abc123\",\n  \"url\": \"https://cdn.example.com/uploads/upload_abc123.jpg\",\n  \"type\": \"image\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/gallery",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Gallery Item By File ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/gallery/file/upload_abc123",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery", "file", "upload_abc123"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Gallery Item By ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/gallery/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["gallery", "1"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

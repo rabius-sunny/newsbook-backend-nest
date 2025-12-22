@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "Upload Module",
+    "_postman_id": "4f6db46a-5a75-4eed-9bdd-2e63ac5c429d",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Upload Single File",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/absolute/path/to/sample-image.jpg",
+              "description": "Attach a local file to upload"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/upload?folder=articles/featured",
+          "host": ["{{baseUrl}}"],
+          "path": ["upload"],
+          "query": [
+            {
+              "key": "folder",
+              "value": "articles/featured"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Multiple Files",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "files",
+              "type": "file",
+              "src": "/absolute/path/to/gallery-photo-1.jpg",
+              "description": "Attach multiple files; add more entries for additional files"
+            },
+            {
+              "key": "files",
+              "type": "file",
+              "src": "/absolute/path/to/gallery-photo-2.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/upload/multiple?folder=gallery/events",
+          "host": ["{{baseUrl}}"],
+          "path": ["upload", "multiple"],
+          "query": [
+            {
+              "key": "folder",
+              "value": "gallery/events"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete File By URL",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"url\": \"https://cdn.example.com/uploads/sample-image.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["upload"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Multiple Files By URL",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"urls\": [\n    \"https://cdn.example.com/uploads/gallery-photo-1.jpg\",\n    \"https://cdn.example.com/uploads/gallery-photo-2.jpg\"\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/upload/multiple",
+          "host": ["{{baseUrl}}"],
+          "path": ["upload", "multiple"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Authentication Parameters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/upload/auth",
+          "host": ["{{baseUrl}}"],
+          "path": ["upload", "auth"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

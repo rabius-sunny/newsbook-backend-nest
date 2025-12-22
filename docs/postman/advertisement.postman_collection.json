@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "Advertisement Module",
+    "_postman_id": "9f7e5e72-6a81-4fcb-9bdd-2039cd8836a4",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Advertisements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements?page=1&limit=10&position=header&isActive=true",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "position",
+              "value": "header"
+            },
+            {
+              "key": "isActive",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Active Advertisements By Position",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/position/header",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "position", "header"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Advertisement By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Advertisement Statistics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/1/statistics",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "1", "statistics"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Advertisement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Homepage Header Banner\",\n  \"description\": \"Seasonal promotion banner for the homepage header\",\n  \"imageUrl\": \"https://cdn.example.com/banners/header-banner.png\",\n  \"clickUrl\": \"https://example.com/promo\",\n  \"position\": \"header\",\n  \"isActive\": true,\n  \"startDate\": \"2025-01-01T00:00:00.000Z\",\n  \"endDate\": \"2025-02-01T00:00:00.000Z\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/advertisements",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Advertisement",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Homepage Header Banner (Updated)\",\n  \"isActive\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Advertisement",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Record Advertisement Impression",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/1/impression",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "1", "impression"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Record Advertisement Click",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/advertisements/1/click",
+          "host": ["{{baseUrl}}"],
+          "path": ["advertisements", "1", "click"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
