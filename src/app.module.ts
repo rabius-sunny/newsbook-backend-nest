@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdvertisementModule } from './modules/advertisement';
 import { ArticleModule } from './modules/article';
+import { AuditLogModule } from './modules/audit-log';
 import { CategoryModule } from './modules/category';
 import { CommentModule } from './modules/comment';
 import { GalleryModule } from './modules/gallery';
@@ -33,6 +34,7 @@ import { PrismaModule } from './prisma/prisma.module';
     AdvertisementModule,
     GalleryModule,
     UploadModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
