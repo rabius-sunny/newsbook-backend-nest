@@ -22,7 +22,9 @@
     "migrate:dev": "prisma migrate dev",
     "docker:dev:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:dev:down": "docker compose -f docker-compose.dev.yml down",
-    "docker:dev:logs": "docker compose -f docker-compose.dev.yml logs -f"
+    "docker:dev:logs": "docker compose -f docker-compose.dev.yml logs -f",
+    "db:seed": "ts-node prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -83,5 +85,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
