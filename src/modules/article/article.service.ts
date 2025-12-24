@@ -86,7 +86,7 @@ export class ArticleService {
       this.prisma.article.findMany({
         where,
         skip,
-        take: limit,
+        take: Number(limit),
         orderBy,
         select: {
           id: true,
