@@ -21,8 +21,55 @@ const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+// Table names matching Prisma schema @@map values
+const tables = [
+  'languages',
+  'users',
+  'categories',
+  'tags',
+  'articles',
+  'article_tags',
+  'article_translations',
+  'comments',
+  'newsletters',
+  'advertisements',
+  'gallery',
+  'settings',
+  'AuditLog',
+];
+
+/**
+ * Clear all tables and reset ID sequences to 1
+ */
+async function resetDatabase() {
+  console.log('🗑️  Clearing existing data and resetting sequences...\n');
+
+  // Disable foreign key checks temporarily
+  await prisma.$executeRawUnsafe('SET session_replication_role = replica;');
+
+  // Truncate all tables and reset identity
+  for (const table of tables) {
+    try {
+      await prisma.$executeRawUnsafe(
+        `TRUNCATE TABLE "${table}" RESTART IDENTITY CASCADE;`,
+      );
+      console.log(`   ✓ Cleared ${table}`);
+    } catch {
+      // Table might not exist yet, skip silently
+    }
+  }
+
+  // Re-enable foreign key checks
+  await prisma.$executeRawUnsafe('SET session_replication_role = DEFAULT;');
+
+  console.log('');
+}
+
 async function main() {
   console.log('🌱 Starting database seeding...\n');
+
+  // Reset all tables and sequences first
+  await resetDatabase();
 
   // Order matters due to foreign key constraints
   // 1. Languages (required by articles)
