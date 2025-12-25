@@ -5,148 +5,199 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    }
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" }
   ],
   "item": [
     {
-      "name": "Get Categories",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/categories?page=1&limit=20&active=true",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories"],
-          "query": [
-            {
-              "key": "page",
-              "value": "1"
-            },
-            {
-              "key": "limit",
-              "value": "20"
-            },
-            {
-              "key": "active",
-              "value": "true"
+      "name": "Public Routes",
+      "description": "Public endpoints - No authentication required",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
             }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get Category Tree",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/categories/tree",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories", "tree"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get Category By Slug",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/categories/slug/politics",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories", "slug", "politics"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get Category By ID",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/categories/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories", "1"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get Category Children",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/categories/1/children",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories", "1", "children"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Category",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Politics\",\n  \"description\": \"National and local political news\",\n  \"image\": \"https://cdn.example.com/categories/politics.png\",\n  \"names\": {\n    \"bn\": \"রাজনীতি\"\n  },\n  \"descriptions\": {\n    \"bn\": \"জাতীয় ও স্থানীয় রাজনৈতিক খবর\"\n  },\n  \"slug\": \"politics\",\n  \"parentId\": null,\n  \"displayOrder\": 1,\n  \"isActive\": true,\n  \"seo\": {\n    \"title\": \"Politics News\",\n    \"description\": \"Latest updates on Bangladeshi politics\",\n    \"keywords\": \"politics,election,bangladesh\"\n  },\n  \"meta\": {\n    \"color\": \"#004aad\"\n  }\n}"
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/categories",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Update Category",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Politics & Policy\",\n  \"isActive\": true,\n  \"displayOrder\": 2\n}"
+        {
+          "name": "Get Category Tree",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "tree"]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/categories/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories", "1"]
+        {
+          "name": "Get Category By Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/slug/politics",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "slug", "politics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Children",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/1/children",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "1", "children"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Delete Category",
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/categories/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["categories", "1"]
+      "name": "Admin Routes",
+      "description": "Admin endpoints - Requires authentication (admin/editor role)",
+      "item": [
+        {
+          "name": "Get Categories (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Tree (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories", "tree"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category By ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Politics\",\n  \"description\": \"National and local political news\",\n  \"image\": \"https://cdn.example.com/categories/politics.png\",\n  \"slug\": \"politics\",\n  \"parentId\": null,\n  \"displayOrder\": 1,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Politics & Policy\",\n  \"isActive\": true,\n  \"displayOrder\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Category Active",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/1/toggle-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories", "1", "toggle-active"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "categories", "1"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     }
   ]
 }

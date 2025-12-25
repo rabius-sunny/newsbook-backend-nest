@@ -1,162 +1,154 @@
 {
   "info": {
     "name": "Setting Module",
-    "_postman_id": "3a6b1a73-8ee2-418a-adb3-bcf6ad65b1b1",
+    "_postman_id": "f4a5b6c7-8901-bcde-f234-56789abcdef0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    }
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" }
   ],
   "item": [
     {
-      "name": "Get All Settings",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/settings?prefix=site.",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings"],
-          "query": [
-            {
-              "key": "prefix",
-              "value": "site."
+      "name": "Public Routes",
+      "description": "Public endpoints - No authentication required",
+      "item": [
+        {
+          "name": "Get Setting By Key",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/settings/site_name",
+              "host": ["{{baseUrl}}"],
+              "path": ["settings", "site_name"]
             }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get Settings By Keys",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"keys\": [\"site.name\", \"site.tagline\"]\n}"
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/settings/bulk",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings", "bulk"]
+        {
+          "name": "Get Bulk Settings",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"keys\": [\"site_name\", \"site_logo\", \"site_description\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/settings/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["settings", "bulk"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Get Setting By Key",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/settings/key/site.name",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings", "key", "site.name"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Setting",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"key\": \"site.name\",\n  \"value\": \"Newsbook\"\n}"
+      "name": "Admin Routes",
+      "description": "Admin endpoints - Requires authentication (admin role only)",
+      "item": [
+        {
+          "name": "Get All Settings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings"]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/settings",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Upsert Setting",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"key\": \"site.tagline\",\n  \"value\": \"Trusted Bangladeshi News\"\n}"
+        {
+          "name": "Get Setting By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings", "1"]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/settings/upsert",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings", "upsert"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Update Setting",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"value\": {\n    \"title\": \"Newsbook\",\n    \"subtitle\": \"Stories that matter\"\n  }\n}"
+        {
+          "name": "Create Setting",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"site_name\",\n  \"value\": \"Grate Bangla News\",\n  \"group\": \"general\",\n  \"type\": \"string\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings"]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/settings/key/site.branding",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings", "key", "site.branding"]
+        {
+          "name": "Update Setting",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"Grate Bangla News Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bulk Settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"settings\": [\n    { \"key\": \"site_name\", \"value\": \"New Site Name\" },\n    { \"key\": \"site_logo\", \"value\": \"https://example.com/logo.png\" }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings", "bulk"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Setting",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings", "1"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
-    },
-    {
-      "name": "Delete Setting By Key",
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/settings/key/site.name",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings", "key", "site.name"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Delete Settings By Prefix",
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/settings/prefix/site.",
-          "host": ["{{baseUrl}}"],
-          "path": ["settings", "prefix", "site."]
-        }
-      },
-      "response": []
+      ]
     }
   ]
 }

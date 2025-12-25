@@ -1,138 +1,108 @@
 {
   "info": {
     "name": "Upload Module",
-    "_postman_id": "4f6db46a-5a75-4eed-9bdd-2e63ac5c429d",
+    "_postman_id": "c7d8e9f0-1234-ef56-789a-bcdef0123456",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    }
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" }
   ],
   "item": [
     {
-      "name": "Upload Single File",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": [
-            {
-              "key": "file",
-              "type": "file",
-              "src": "/absolute/path/to/sample-image.jpg",
-              "description": "Attach a local file to upload"
-            }
-          ]
-        },
-        "url": {
-          "raw": "{{baseUrl}}/upload?folder=articles/featured",
-          "host": ["{{baseUrl}}"],
-          "path": ["upload"],
-          "query": [
-            {
-              "key": "folder",
-              "value": "articles/featured"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Upload Multiple Files",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": [
-            {
-              "key": "files",
-              "type": "file",
-              "src": "/absolute/path/to/gallery-photo-1.jpg",
-              "description": "Attach multiple files; add more entries for additional files"
+      "name": "Admin Routes",
+      "description": "Admin endpoints - Requires authentication (admin/editor roles)",
+      "item": [
+        {
+          "name": "Upload Single File",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
             },
-            {
-              "key": "files",
-              "type": "file",
-              "src": "/absolute/path/to/gallery-photo-2.jpg"
+            "url": {
+              "raw": "{{baseUrl}}/admin/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "upload"]
             }
-          ]
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/upload/multiple?folder=gallery/events",
-          "host": ["{{baseUrl}}"],
-          "path": ["upload", "multiple"],
-          "query": [
-            {
-              "key": "folder",
-              "value": "gallery/events"
+        {
+          "name": "Upload Multiple Files",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/upload/multiple",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "upload", "multiple"]
             }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Delete File By URL",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"url\": \"https://cdn.example.com/uploads/sample-image.jpg\"\n}"
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/upload",
-          "host": ["{{baseUrl}}"],
-          "path": ["upload"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Delete Multiple Files By URL",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"urls\": [\n    \"https://cdn.example.com/uploads/gallery-photo-1.jpg\",\n    \"https://cdn.example.com/uploads/gallery-photo-2.jpg\"\n  ]\n}"
+        {
+          "name": "Get All Uploads",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/upload?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "upload"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/upload/multiple",
-          "host": ["{{baseUrl}}"],
-          "path": ["upload", "multiple"]
+        {
+          "name": "Get Upload By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/upload/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "upload", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Upload",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/upload/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "upload", "1"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
-    },
-    {
-      "name": "Get Authentication Parameters",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/upload/auth",
-          "host": ["{{baseUrl}}"],
-          "path": ["upload", "auth"]
-        }
-      },
-      "response": []
+      ]
     }
   ]
 }

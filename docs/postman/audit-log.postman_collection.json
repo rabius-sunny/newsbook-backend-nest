@@ -1,173 +1,83 @@
 {
   "info": {
-    "name": "Audit Log API",
-    "description": "API endpoints for viewing audit logs. Audit logs track all create, update, delete, publish, and archive actions across all entities in the system.",
+    "name": "Audit Log Module",
+    "_postman_id": "d8e9f0a1-2345-f678-9abc-def012345678",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" }
+  ],
   "item": [
     {
-      "name": "Get All Audit Logs",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/audit-logs?page=1&limit=20&sortOrder=desc",
-          "host": ["{{baseUrl}}"],
-          "path": ["audit-logs"],
-          "query": [
-            {
-              "key": "page",
-              "value": "1",
-              "description": "Page number (default: 1)"
-            },
-            {
-              "key": "limit",
-              "value": "20",
-              "description": "Items per page (default: 20, max: 100)"
-            },
-            {
-              "key": "userId",
-              "value": "1",
-              "description": "Filter by user ID",
-              "disabled": true
-            },
-            {
-              "key": "action",
-              "value": "create",
-              "description": "Filter by action (create, update, delete, publish, unpublish, archive)",
-              "disabled": true
-            },
-            {
-              "key": "entityType",
-              "value": "article",
-              "description": "Filter by entity type (article, category, user, tag, etc.)",
-              "disabled": true
-            },
-            {
-              "key": "entityId",
-              "value": "1",
-              "description": "Filter by entity ID",
-              "disabled": true
-            },
-            {
-              "key": "dateFrom",
-              "value": "2025-01-01",
-              "description": "Filter logs from date (YYYY-MM-DD)",
-              "disabled": true
-            },
-            {
-              "key": "dateTo",
-              "value": "2025-12-31",
-              "description": "Filter logs to date (YYYY-MM-DD)",
-              "disabled": true
-            },
-            {
-              "key": "sortOrder",
-              "value": "desc",
-              "description": "Sort order (asc, desc)"
+      "name": "Admin Routes",
+      "description": "Admin endpoints - Requires authentication (admin role only)",
+      "item": [
+        {
+          "name": "Get All Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-logs?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
             }
-          ]
+          },
+          "response": []
         },
-        "description": "Retrieve all audit logs with optional filtering and pagination. Supports filtering by user, action, entity type, entity ID, and date range."
-      },
-      "response": [
         {
-          "name": "Success Response",
-          "status": "OK",
-          "code": 200,
-          "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": {\n    \"data\": [\n      {\n        \"id\": 1,\n        \"userId\": 1,\n        \"action\": \"create\",\n        \"entityType\": \"article\",\n        \"entityId\": 5,\n        \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n        \"createdAt\": \"2025-12-23T10:30:00.000Z\"\n      },\n      {\n        \"id\": 2,\n        \"userId\": 1,\n        \"action\": \"publish\",\n        \"entityType\": \"article\",\n        \"entityId\": 5,\n        \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n        \"createdAt\": \"2025-12-23T11:00:00.000Z\"\n      }\n    ],\n    \"meta\": {\n      \"total\": 150,\n      \"page\": 1,\n      \"limit\": 20,\n      \"totalPages\": 8\n    }\n  }\n}"
+          "name": "Get Audit Log By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-logs/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-logs", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Logs By User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-logs/user/1?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-logs", "user", "1"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Logs By Action",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-logs/action/CREATE?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-logs", "action", "CREATE"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
         }
       ]
-    },
-    {
-      "name": "Get Audit Log by ID",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/audit-logs/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["audit-logs", "1"]
-        },
-        "description": "Retrieve a single audit log entry by its ID."
-      },
-      "response": [
-        {
-          "name": "Success Response",
-          "status": "OK",
-          "code": 200,
-          "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": {\n    \"id\": 1,\n    \"userId\": 1,\n    \"action\": \"create\",\n    \"entityType\": \"article\",\n    \"entityId\": 5,\n    \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n    \"createdAt\": \"2025-12-23T10:30:00.000Z\"\n  }\n}"
-        }
-      ]
-    },
-    {
-      "name": "Get Audit Logs by Entity",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/audit-logs/entity/article/5",
-          "host": ["{{baseUrl}}"],
-          "path": ["audit-logs", "entity", "article", "5"]
-        },
-        "description": "Retrieve all audit logs for a specific entity. Useful for viewing the complete history of changes to a single article, category, user, etc."
-      },
-      "response": [
-        {
-          "name": "Success Response",
-          "status": "OK",
-          "code": 200,
-          "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"userId\": 1,\n      \"action\": \"create\",\n      \"entityType\": \"article\",\n      \"entityId\": 5,\n      \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n      \"createdAt\": \"2025-12-23T10:30:00.000Z\"\n    },\n    {\n      \"id\": 2,\n      \"userId\": 1,\n      \"action\": \"update\",\n      \"entityType\": \"article\",\n      \"entityId\": 5,\n      \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n      \"createdAt\": \"2025-12-23T10:45:00.000Z\"\n    },\n    {\n      \"id\": 3,\n      \"userId\": 2,\n      \"action\": \"publish\",\n      \"entityType\": \"article\",\n      \"entityId\": 5,\n      \"identity\": \"192.168.1.2 | Mozilla/5.0\",\n      \"createdAt\": \"2025-12-23T11:00:00.000Z\"\n    }\n  ]\n}"
-        }
-      ]
-    },
-    {
-      "name": "Get Audit Logs by User",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/audit-logs/user/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["audit-logs", "user", "1"]
-        },
-        "description": "Retrieve all audit logs for a specific user. Useful for viewing all actions performed by a particular admin, editor, or reporter."
-      },
-      "response": [
-        {
-          "name": "Success Response",
-          "status": "OK",
-          "code": 200,
-          "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"userId\": 1,\n      \"action\": \"create\",\n      \"entityType\": \"article\",\n      \"entityId\": 5,\n      \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n      \"createdAt\": \"2025-12-23T10:30:00.000Z\"\n    },\n    {\n      \"id\": 4,\n      \"userId\": 1,\n      \"action\": \"create\",\n      \"entityType\": \"category\",\n      \"entityId\": 3,\n      \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n      \"createdAt\": \"2025-12-23T09:00:00.000Z\"\n    },\n    {\n      \"id\": 5,\n      \"userId\": 1,\n      \"action\": \"update\",\n      \"entityType\": \"user\",\n      \"entityId\": 2,\n      \"identity\": \"192.168.1.1 | Mozilla/5.0\",\n      \"createdAt\": \"2025-12-23T08:30:00.000Z\"\n    }\n  ]\n}"
-        }
-      ]
-    }
-  ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000",
-      "type": "string"
     }
   ]
 }

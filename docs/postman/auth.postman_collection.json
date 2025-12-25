@@ -1,65 +1,66 @@
 {
   "info": {
-    "name": "Newsletter Module",
-    "_postman_id": "a5b6c7d8-9012-cdef-3456-789abcdef012",
+    "name": "Auth Module",
+    "_postman_id": "e9f0a1b2-3456-a789-bcde-f0123456789a",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:3000/api/v1", "type": "string" },
-    { "key": "token", "value": "", "type": "string" }
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" }
   ],
   "item": [
     {
       "name": "Public Routes",
-      "description": "Public endpoints - No authentication required",
+      "description": "Public authentication endpoints - No authentication required",
       "item": [
         {
-          "name": "Subscribe to Newsletter",
+          "name": "Login",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"subscriber@example.com\",\n  \"name\": \"John Subscriber\"\n}"
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/newsletters/subscribe",
+              "raw": "{{baseUrl}}/auth/login",
               "host": ["{{baseUrl}}"],
-              "path": ["newsletters", "subscribe"]
+              "path": ["auth", "login"]
             }
           },
           "response": []
         },
         {
-          "name": "Unsubscribe from Newsletter",
+          "name": "Register",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"subscriber@example.com\"\n}"
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"SecurePass123\",\n  \"name\": \"New User\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/newsletters/unsubscribe",
+              "raw": "{{baseUrl}}/auth/register",
               "host": ["{{baseUrl}}"],
-              "path": ["newsletters", "unsubscribe"]
+              "path": ["auth", "register"]
             }
           },
           "response": []
         },
         {
-          "name": "Verify Email",
+          "name": "Refresh Token",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"verification-token-here\"\n}"
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/newsletters/verify",
+              "raw": "{{baseUrl}}/auth/refresh",
               "host": ["{{baseUrl}}"],
-              "path": ["newsletters", "verify"]
+              "path": ["auth", "refresh"]
             }
           },
           "response": []
@@ -67,61 +68,24 @@
       ]
     },
     {
-      "name": "Admin Routes",
-      "description": "Admin endpoints - Requires authentication (admin/editor roles)",
+      "name": "Protected Routes",
+      "description": "Protected endpoints - Requires authentication",
       "item": [
         {
-          "name": "Get All Subscribers",
+          "name": "Get Profile",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
             "url": {
-              "raw": "{{baseUrl}}/admin/newsletters?page=1&limit=10",
+              "raw": "{{baseUrl}}/auth/profile",
               "host": ["{{baseUrl}}"],
-              "path": ["admin", "newsletters"],
-              "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
-              ]
+              "path": ["auth", "profile"]
             }
           },
           "response": []
         },
         {
-          "name": "Get Subscriber By ID",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": {
-              "raw": "{{baseUrl}}/admin/newsletters/1",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "newsletters", "1"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Subscriber",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"admin-added@example.com\",\n  \"name\": \"Admin Added\",\n  \"isActive\": true,\n  \"isVerified\": true\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/admin/newsletters",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "newsletters"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Subscriber",
+          "name": "Update Profile",
           "request": {
             "method": "PATCH",
             "header": [
@@ -130,25 +94,45 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Subscriber Name\",\n  \"isActive\": false\n}"
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/admin/newsletters/1",
+              "raw": "{{baseUrl}}/auth/profile",
               "host": ["{{baseUrl}}"],
-              "path": ["admin", "newsletters", "1"]
+              "path": ["auth", "profile"]
             }
           },
           "response": []
         },
         {
-          "name": "Delete Subscriber",
+          "name": "Change Password",
           "request": {
-            "method": "DELETE",
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"NewSecurePass456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
             "url": {
-              "raw": "{{baseUrl}}/admin/newsletters/1",
+              "raw": "{{baseUrl}}/auth/logout",
               "host": ["{{baseUrl}}"],
-              "path": ["admin", "newsletters", "1"]
+              "path": ["auth", "logout"]
             }
           },
           "response": []
