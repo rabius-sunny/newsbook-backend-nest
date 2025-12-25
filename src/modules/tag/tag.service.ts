@@ -230,4 +230,96 @@ export class TagService {
       return handlePrismaError(error);
     }
   }
+
+  // ==================== ADMIN METHODS ====================
+
+  async getTagsAdmin(params: TagQueryDto): Promise<
+    ServiceResult<{
+      tags: TagWithArticleCount[];
+      meta: PaginationMeta;
+    }>
+  > {
+    try {
+      const page = params.page || 1;
+      const limit = params.limit || 50;
+      const offset = calculateOffset(page, limit);
+
+      // Build where conditions (include inactive for admin)
+      const where: Prisma.TagWhereInput = {};
+
+      if (params.q) {
+        where.name = { contains: params.q, mode: 'insensitive' };
+      }
+
+      if (params.active !== undefined) {
+        where.isActive = params.active === 'true';
+      }
+
+      // Apply sorting
+      const orderBy: Prisma.TagOrderByWithRelationInput = {};
+      const sortBy = params.sortBy || 'name';
+      const sortOrder = params.sortOrder || 'asc';
+      orderBy[sortBy] = sortOrder;
+
+      // Get total count
+      const totalCount = await this.prisma.tag.count({ where });
+
+      // Get paginated tags with article count
+      const tags = await this.prisma.tag.findMany({
+        where,
+        orderBy,
+        take: limit,
+        skip: offset,
+        include: {
+          _count: {
+            select: { articleTags: true },
+          },
+        },
+      });
+
+      const tagsData: TagWithArticleCount[] = tags.map((tag) => ({
+        ...tag,
+        articleCount: tag._count.articleTags,
+      }));
+
+      return {
+        success: true,
+        message: 'Tags retrieved successfully',
+        data: {
+          tags: tagsData,
+          meta: calculatePagination(totalCount, { page, limit }),
+        },
+      };
+    } catch (error) {
+      return handlePrismaError(error);
+    }
+  }
+
+  async toggleActive(id: number): Promise<ServiceResult<Tag>> {
+    try {
+      const existing = await this.prisma.tag.findUnique({
+        where: { id },
+      });
+
+      if (!existing) {
+        throw new NotFoundException(`Tag with ID ${id} not found`);
+      }
+
+      const tag = await this.prisma.tag.update({
+        where: { id },
+        data: { isActive: !existing.isActive },
+      });
+
+      return {
+        success: true,
+        message: `Tag ${tag.isActive ? 'activated' : 'deactivated'} successfully`,
+        data: tag,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      return handlePrismaError(error);
+    }
+  }
 }

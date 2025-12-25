@@ -1,10 +1,12 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Roles } from '../../common/decorators';
 import { AuditLogService } from './audit-log.service';
 import { ZodValidationPipe } from '../../common/pipes';
 import { auditLogQuerySchema, auditLogParamsSchema } from './dto';
 import type { AuditLogQueryDto } from './dto';
 
-@Controller('audit-logs')
+@Controller('admin/audit-logs')
+@Roles('admin')
 export class AuditLogController {
   constructor(private readonly auditLogService: AuditLogService) {}
 

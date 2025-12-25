@@ -749,4 +749,227 @@ export class ArticleService {
 
     return orderMap[sortBy] || { publishedAt: sortOrder };
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // ADMIN-SPECIFIC METHODS
+  // ═══════════════════════════════════════════════════════════════
+
+  /**
+   * Get all articles for admin (includes drafts, unpublished)
+   */
+  async getArticlesAdmin(query: ArticleQueryDto): Promise<PaginatedArticles> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const skip = calculateOffset(page, limit);
+
+    // Build filter conditions without forcing isPublished
+    const filters: Prisma.ArticleWhereInput = {};
+
+    if (query.q) {
+      filters.OR = [
+        { title: { contains: query.q, mode: 'insensitive' } },
+        { excerpt: { contains: query.q, mode: 'insensitive' } },
+      ];
+    }
+
+    if (query.category) {
+      filters.categoryId = query.category;
+    }
+
+    if (query.author) {
+      filters.authorId = query.author;
+    }
+
+    if (query.status) {
+      filters.status = query.status;
+    }
+
+    if (query.published === 'true') {
+      filters.isPublished = true;
+    } else if (query.published === 'false') {
+      filters.isPublished = false;
+    }
+
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortOrder = query.sortOrder ?? 'desc';
+    const orderBy = this.buildOrderBy(sortBy, sortOrder);
+
+    const [articles, total] = await Promise.all([
+      this.prisma.article.findMany({
+        where: filters,
+        skip,
+        take: Number(limit),
+        orderBy,
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+          author: {
+            select: { id: true, name: true, avatar: true },
+          },
+          tags: {
+            select: {
+              tag: {
+                select: { id: true, name: true, slug: true },
+              },
+            },
+          },
+          language: {
+            select: { id: true, code: true, name: true },
+          },
+        },
+      }),
+      this.prisma.article.count({ where: filters }),
+    ]);
+
+    const formattedArticles = articles.map((article) => ({
+      ...article,
+      tags: article.tags.map((at) => at.tag),
+    }));
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      articles: formattedArticles as unknown as ArticleListItem[],
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+  }
+
+  /**
+   * Get article statistics for admin dashboard
+   */
+  async getArticleStats() {
+    const [
+      totalArticles,
+      publishedArticles,
+      draftArticles,
+      featuredArticles,
+      breakingArticles,
+      totalViews,
+      totalComments,
+    ] = await Promise.all([
+      this.prisma.article.count(),
+      this.prisma.article.count({ where: { isPublished: true } }),
+      this.prisma.article.count({ where: { status: 'draft' } }),
+      this.prisma.article.count({ where: { isFeatured: true } }),
+      this.prisma.article.count({ where: { isBreaking: true } }),
+      this.prisma.article.aggregate({ _sum: { viewCount: true } }),
+      this.prisma.comment.count(),
+    ]);
+
+    // Get articles by status
+    const articlesByStatus = await this.prisma.article.groupBy({
+      by: ['status'],
+      _count: { status: true },
+    });
+
+    // Get top categories
+    const topCategories = await this.prisma.article.groupBy({
+      by: ['categoryId'],
+      _count: { categoryId: true },
+      orderBy: { _count: { categoryId: 'desc' } },
+      take: 5,
+    });
+
+    return {
+      totalArticles,
+      publishedArticles,
+      draftArticles,
+      featuredArticles,
+      breakingArticles,
+      totalViews: totalViews._sum.viewCount ?? 0,
+      totalComments,
+      articlesByStatus: articlesByStatus.map((s) => ({
+        status: s.status,
+        count: s._count.status,
+      })),
+      topCategories,
+    };
+  }
+
+  /**
+   * Get draft articles for admin
+   */
+  async getDraftArticles(query: ArticleQueryDto): Promise<PaginatedArticles> {
+    const modifiedQuery = { ...query, status: 'draft' as const };
+    return this.getArticlesAdmin(modifiedQuery);
+  }
+
+  /**
+   * Publish an article
+   */
+  async publishArticle(id: number) {
+    const article = await this.prisma.article.findUnique({ where: { id } });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return this.prisma.article.update({
+      where: { id },
+      data: {
+        isPublished: true,
+        status: 'published',
+        publishedAt: new Date(),
+      },
+    });
+  }
+
+  /**
+   * Unpublish an article
+   */
+  async unpublishArticle(id: number) {
+    const article = await this.prisma.article.findUnique({ where: { id } });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return this.prisma.article.update({
+      where: { id },
+      data: {
+        isPublished: false,
+        status: 'draft',
+      },
+    });
+  }
+
+  /**
+   * Toggle featured status
+   */
+  async toggleFeatured(id: number) {
+    const article = await this.prisma.article.findUnique({ where: { id } });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return this.prisma.article.update({
+      where: { id },
+      data: {
+        isFeatured: !article.isFeatured,
+      },
+    });
+  }
+
+  /**
+   * Toggle breaking news status
+   */
+  async toggleBreaking(id: number) {
+    const article = await this.prisma.article.findUnique({ where: { id } });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return this.prisma.article.update({
+      where: { id },
+      data: {
+        isBreaking: !article.isBreaking,
+      },
+    });
+  }
 }

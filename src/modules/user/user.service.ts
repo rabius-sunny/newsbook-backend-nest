@@ -283,4 +283,44 @@ export class UserService {
       return handlePrismaError(error);
     }
   }
+
+  async toggleActive(id: number): Promise<ServiceResult<UserPublic>> {
+    try {
+      const existing = await this.prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!existing) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { isActive: !existing.isActive },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          bio: true,
+          avatar: true,
+          role: true,
+          isActive: true,
+          meta: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      return {
+        success: true,
+        message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully`,
+        data: user,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      return handlePrismaError(error);
+    }
+  }
 }

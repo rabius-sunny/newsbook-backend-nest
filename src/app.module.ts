@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthGuard, RolesGuard } from './common/guards';
 import { AdvertisementModule } from './modules/advertisement';
 import { ArticleModule } from './modules/article';
 import { AuditLogModule } from './modules/audit-log';
+import { AuthModule } from './modules/auth';
 import { CategoryModule } from './modules/category';
 import { CommentModule } from './modules/comment';
 import { GalleryModule } from './modules/gallery';
@@ -23,6 +26,7 @@ import { PrismaModule } from './prisma/prisma.module';
       envFilePath: ['.env', '.env.production'],
     }),
     PrismaModule,
+    AuthModule,
     LanguageModule,
     CategoryModule,
     UserModule,
@@ -37,6 +41,17 @@ import { PrismaModule } from './prisma/prisma.module';
     AuditLogModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // Global guards - order matters: AuthGuard runs first, then RolesGuard
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}

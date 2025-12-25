@@ -1,0 +1,3 @@
+/* 
+  Api type specifications for third party frontend
+*/

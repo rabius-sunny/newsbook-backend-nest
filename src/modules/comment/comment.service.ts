@@ -152,4 +152,98 @@ export class CommentService {
       where: { articleId },
     });
   }
+
+  // ==================== ADMIN METHODS ====================
+
+  async getCommentsAdmin(query: CommentQueryDto): Promise<PaginatedComments> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const skip = calculateOffset(page, limit);
+
+    // Admin sees all comments
+    const where: { articleId?: number } = {};
+    if (query.articleId) {
+      where.articleId = query.articleId;
+    }
+
+    const [comments, total] = await Promise.all([
+      this.prisma.comment.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: query.sortOrder || 'desc' },
+        include: {
+          article: {
+            select: { id: true, slug: true },
+          },
+        },
+      }),
+      this.prisma.comment.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      comments,
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+  }
+
+  async getPendingComments(query: CommentQueryDto): Promise<PaginatedComments> {
+    // Since there's no isApproved field, return most recent comments for moderation review
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const skip = calculateOffset(page, limit);
+
+    const [comments, total] = await Promise.all([
+      this.prisma.comment.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          article: {
+            select: { id: true, slug: true },
+          },
+        },
+      }),
+      this.prisma.comment.count(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      comments,
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+  }
+
+  async approveComment(id: number): Promise<Comment> {
+    const comment = await this.prisma.comment.findUnique({ where: { id } });
+
+    if (!comment) {
+      throw new NotFoundException(`Comment with ID ${id} not found`);
+    }
+
+    // Comment exists, return it (no approval field in schema)
+    return comment;
+  }
+
+  async rejectComment(id: number): Promise<{ message: string }> {
+    const comment = await this.prisma.comment.findUnique({ where: { id } });
+
+    if (!comment) {
+      throw new NotFoundException(`Comment with ID ${id} not found`);
+    }
+
+    // Delete the comment as rejection
+    await this.prisma.comment.delete({ where: { id } });
+
+    return { message: 'Comment rejected and deleted' };
+  }
 }

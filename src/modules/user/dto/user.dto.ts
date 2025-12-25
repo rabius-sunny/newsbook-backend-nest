@@ -9,4 +9,4 @@ import {
 export type CreateUserDto = z.infer<typeof userCreateSchema>;
 export type UpdateUserDto = z.infer<typeof userUpdateSchema>;
 export type UserQueryDto = z.infer<typeof userQuerySchema>;
-export type ChangePasswordDto = z.infer<typeof userChangePasswordSchema>;
+export type UserChangePasswordDto = z.infer<typeof userChangePasswordSchema>;

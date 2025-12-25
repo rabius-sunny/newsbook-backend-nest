@@ -1,28 +1,19 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import { Public } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
 import { AdvertisementService } from './advertisement.service';
-import type {
-  AdvertisementQueryDto,
-  CreateAdvertisementDto,
-  UpdateAdvertisementDto,
-} from './dto';
-import {
-  advertisementCreateSchema,
-  advertisementQuerySchema,
-  advertisementUpdateSchema,
-} from './dto';
+import type { AdvertisementQueryDto } from './dto';
+import { advertisementQuerySchema } from './dto';
 
 @Controller('advertisements')
+@Public()
 export class AdvertisementController {
   constructor(private readonly advertisementService: AdvertisementService) {}
 
@@ -42,34 +33,6 @@ export class AdvertisementController {
   @Get(':id')
   async getAdvertisementById(@Param('id', ParseIntPipe) id: number) {
     return this.advertisementService.getAdvertisementById(id);
-  }
-
-  @Get(':id/statistics')
-  async getStatistics(@Param('id', ParseIntPipe) id: number) {
-    return this.advertisementService.getStatistics(id);
-  }
-
-  @Post()
-  async createAdvertisement(
-    @Body(new ZodValidationPipe(advertisementCreateSchema))
-    dto: CreateAdvertisementDto,
-  ) {
-    return this.advertisementService.createAdvertisement(dto);
-  }
-
-  @Patch(':id')
-  async updateAdvertisement(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(new ZodValidationPipe(advertisementUpdateSchema))
-    dto: UpdateAdvertisementDto,
-  ) {
-    return this.advertisementService.updateAdvertisement(id, dto);
-  }
-
-  @Delete(':id')
-  async deleteAdvertisement(@Param('id', ParseIntPipe) id: number) {
-    await this.advertisementService.deleteAdvertisement(id);
-    return { message: 'Advertisement deleted successfully' };
   }
 
   @Post(':id/impression')

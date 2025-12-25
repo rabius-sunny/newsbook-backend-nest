@@ -159,4 +159,62 @@ export class AdvertisementService {
       ctr: Math.round(ctr * 100) / 100,
     };
   }
+
+  // ==================== ADMIN METHODS ====================
+
+  async getAdvertisementsAdmin(
+    query: AdvertisementQueryDto,
+  ): Promise<PaginatedAdvertisements> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const skip = calculateOffset(page, limit);
+
+    // Build where clause (include inactive for admin)
+    const where: Prisma.AdvertisementWhereInput = {};
+
+    if (query.position) {
+      where.position = query.position;
+    }
+
+    if (query.isActive === 'true') {
+      where.isActive = true;
+    } else if (query.isActive === 'false') {
+      where.isActive = false;
+    }
+
+    const [advertisements, total] = await Promise.all([
+      this.prisma.advertisement.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.advertisement.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      advertisements,
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+  }
+
+  async toggleActive(id: number): Promise<Advertisement> {
+    const existing = await this.prisma.advertisement.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Advertisement with ID ${id} not found`);
+    }
+
+    return this.prisma.advertisement.update({
+      where: { id },
+      data: { isActive: !existing.isActive },
+    });
+  }
 }

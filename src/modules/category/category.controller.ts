@@ -1,28 +1,12 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Public } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
-import type {
-  CategoryQueryDto,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-} from './dto';
-import {
-  categoryCreateSchema,
-  categoryQuerySchema,
-  categoryUpdateSchema,
-} from './dto';
+import type { CategoryQueryDto } from './dto';
+import { categoryQuerySchema } from './dto';
 import { CategoryService } from './category.service';
 
 @Controller('categories')
+@Public()
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -54,25 +38,5 @@ export class CategoryController {
   @Get(':id/children')
   async getCategoryChildren(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.getCategoryChildren(id);
-  }
-
-  @Post()
-  async createCategory(
-    @Body(new ZodValidationPipe(categoryCreateSchema)) dto: CreateCategoryDto,
-  ) {
-    return this.categoryService.createCategory(dto);
-  }
-
-  @Patch(':id')
-  async updateCategory(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(new ZodValidationPipe(categoryUpdateSchema)) dto: UpdateCategoryDto,
-  ) {
-    return this.categoryService.updateCategory(id, dto);
-  }
-
-  @Delete(':id')
-  async deleteCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.deleteCategory(id);
   }
 }

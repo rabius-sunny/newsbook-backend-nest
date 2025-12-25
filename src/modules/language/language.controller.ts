@@ -1,20 +1,9 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Put,
-} from '@nestjs/common';
-import { ZodValidationPipe } from '../../common/pipes';
-import type { CreateLanguageDto, UpdateLanguageDto } from './dto';
-import { languageCreateSchema, languageUpdateSchema } from './dto';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Public } from '../../common/decorators';
 import { LanguageService } from './language.service';
 
 @Controller('languages')
+@Public()
 export class LanguageController {
   constructor(private readonly languageService: LanguageService) {}
 
@@ -36,30 +25,5 @@ export class LanguageController {
   @Get(':id')
   async getLanguageById(@Param('id', ParseIntPipe) id: number) {
     return this.languageService.getLanguageById(id);
-  }
-
-  @Post()
-  async createLanguage(
-    @Body(new ZodValidationPipe(languageCreateSchema)) dto: CreateLanguageDto,
-  ) {
-    return this.languageService.createLanguage(dto);
-  }
-
-  @Patch(':id')
-  async updateLanguage(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(new ZodValidationPipe(languageUpdateSchema)) dto: UpdateLanguageDto,
-  ) {
-    return this.languageService.updateLanguage(id, dto);
-  }
-
-  @Delete(':id')
-  async deleteLanguage(@Param('id', ParseIntPipe) id: number) {
-    return this.languageService.deleteLanguage(id);
-  }
-
-  @Put(':id/default')
-  async setDefaultLanguage(@Param('id', ParseIntPipe) id: number) {
-    return this.languageService.setDefaultLanguage(id);
   }
 }

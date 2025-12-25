@@ -8,12 +8,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Roles } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
 import type { CreateGalleryDto, GalleryQueryDto } from './dto';
 import { galleryCreateSchema, galleryQuerySchema } from './dto';
 import { GalleryService } from './gallery.service';
 
-@Controller('gallery')
+@Controller('admin/gallery')
+@Roles('admin', 'editor')
 export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
 

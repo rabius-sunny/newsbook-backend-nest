@@ -10,6 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Roles } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
 import type {
   DeleteFileDto,
@@ -23,7 +24,8 @@ import {
 } from './dto';
 import { UploadService } from './upload.service';
 
-@Controller('upload')
+@Controller('admin/upload')
+@Roles('admin', 'editor')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 

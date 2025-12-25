@@ -382,4 +382,86 @@ export class CategoryService {
       path: parent.path ? `${parent.path}/${slug}` : slug,
     };
   }
+
+  // ==================== ADMIN METHODS ====================
+
+  async getCategoriesAdmin(
+    params: { page?: number; limit?: number } = {},
+  ): Promise<
+    ServiceResult<{
+      categories: CategoryWithArticleCount[];
+      meta: PaginationMeta;
+    }>
+  > {
+    try {
+      const page = params.page || 1;
+      const limit = params.limit || 20;
+      const offset = calculateOffset(page, limit);
+
+      // Get total count (including inactive for admin)
+      const totalCount = await this.prisma.category.count();
+
+      // Get paginated categories with parent relation and article count
+      const categories = await this.prisma.category.findMany({
+        include: {
+          parent: {
+            select: { id: true, name: true, slug: true },
+          },
+          _count: {
+            select: { articles: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: offset,
+      });
+
+      const categoriesData: CategoryWithArticleCount[] = categories.map(
+        (cat) => ({
+          ...cat,
+          parent: cat.parent,
+          articleCount: cat._count.articles,
+        }),
+      );
+
+      return {
+        success: true,
+        message: 'Categories retrieved successfully',
+        data: {
+          categories: categoriesData,
+          meta: calculatePagination(totalCount, { page, limit }),
+        },
+      };
+    } catch (error) {
+      return handlePrismaError(error);
+    }
+  }
+
+  async toggleActive(id: number): Promise<ServiceResult<Category>> {
+    try {
+      const existing = await this.prisma.category.findUnique({
+        where: { id },
+      });
+
+      if (!existing) {
+        throw new NotFoundException(`Category with ID ${id} not found`);
+      }
+
+      const category = await this.prisma.category.update({
+        where: { id },
+        data: { isActive: !existing.isActive },
+      });
+
+      return {
+        success: true,
+        message: `Category ${category.isActive ? 'activated' : 'deactivated'} successfully`,
+        data: category,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      return handlePrismaError(error);
+    }
+  }
 }

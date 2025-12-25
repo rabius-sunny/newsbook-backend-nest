@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Language } from '@prisma/client';
 import { handlePrismaError } from '../../common/filters/prisma-exception.filter';
 import { ApiResponse, ServiceResult } from '../../common/types';
@@ -244,6 +248,62 @@ export class LanguageService {
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
+        throw error;
+      }
+      return handlePrismaError(error);
+    }
+  }
+
+  // ==================== ADMIN METHODS ====================
+
+  async getAllLanguages(): Promise<ServiceResult<Language[]>> {
+    try {
+      const languages = await this.prisma.language.findMany({
+        orderBy: [{ isDefault: 'desc' }, { name: 'asc' }],
+      });
+
+      return {
+        success: true,
+        message: 'All languages retrieved successfully',
+        data: languages,
+      };
+    } catch (error) {
+      return handlePrismaError(error);
+    }
+  }
+
+  async toggleActive(id: number): Promise<ServiceResult<Language>> {
+    try {
+      const existing = await this.prisma.language.findUnique({
+        where: { id },
+      });
+
+      if (!existing) {
+        throw new NotFoundException(`Language with ID ${id} not found`);
+      }
+
+      // Cannot deactivate default language
+      if (existing.isDefault && existing.isActive) {
+        throw new BadRequestException('Cannot deactivate the default language');
+      }
+
+      const language = await this.prisma.language.update({
+        where: { id },
+        data: { isActive: !existing.isActive },
+      });
+
+      this.clearCache();
+
+      return {
+        success: true,
+        message: `Language ${language.isActive ? 'activated' : 'deactivated'} successfully`,
+        data: language,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
       return handlePrismaError(error);

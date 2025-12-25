@@ -1,20 +1,12 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Public } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
-import type { CreateTagDto, TagQueryDto, UpdateTagDto } from './dto';
-import { tagCreateSchema, tagQuerySchema, tagUpdateSchema } from './dto';
+import type { TagQueryDto } from './dto';
+import { tagQuerySchema } from './dto';
 import { TagService } from './tag.service';
 
 @Controller('tags')
+@Public()
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
@@ -39,25 +31,5 @@ export class TagController {
   @Get(':id')
   async getTagById(@Param('id', ParseIntPipe) id: number) {
     return this.tagService.getTagById(id);
-  }
-
-  @Post()
-  async createTag(
-    @Body(new ZodValidationPipe(tagCreateSchema)) dto: CreateTagDto,
-  ) {
-    return this.tagService.createTag(dto);
-  }
-
-  @Patch(':id')
-  async updateTag(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(new ZodValidationPipe(tagUpdateSchema)) dto: UpdateTagDto,
-  ) {
-    return this.tagService.updateTag(id, dto);
-  }
-
-  @Delete(':id')
-  async deleteTag(@Param('id', ParseIntPipe) id: number) {
-    return this.tagService.deleteTag(id);
   }
 }

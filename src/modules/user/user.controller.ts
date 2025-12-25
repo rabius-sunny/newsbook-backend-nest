@@ -9,12 +9,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Roles } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
 import type { CreateUserDto, UpdateUserDto, UserQueryDto } from './dto';
 import { userCreateSchema, userQuerySchema, userUpdateSchema } from './dto';
 import { UserService } from './user.service';
 
-@Controller('users')
+@Controller('admin/users')
+@Roles('admin')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -53,6 +55,11 @@ export class UserController {
     @Body(new ZodValidationPipe(userUpdateSchema)) dto: UpdateUserDto,
   ) {
     return this.userService.updateUser(id, dto);
+  }
+
+  @Patch(':id/toggle-active')
+  async toggleUserActive(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.toggleActive(id);
   }
 
   @Delete(':id')
