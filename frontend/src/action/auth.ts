@@ -36,15 +36,15 @@ export const adminAuthenticate = async (email: string, password: string) => {
 
     const authData = res.data;
 
-    // Set access token cookie
+    // Set access token cookie (NOT httpOnly so client can use for API calls)
     cookieStore.set('adminToken', authData.accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: authData.expiresIn,
     });
 
-    // Set refresh token cookie (longer expiry)
+    // Set refresh token cookie (httpOnly for security)
     cookieStore.set('refreshToken', authData.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -101,7 +101,7 @@ export const refreshAdminToken = async () => {
     const authData = res.data;
 
     cookieStore.set('adminToken', authData.accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: authData.expiresIn,

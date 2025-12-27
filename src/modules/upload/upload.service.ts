@@ -1,13 +1,13 @@
 import {
-  Injectable,
   BadRequestException,
-  NotFoundException,
+  Injectable,
   InternalServerErrorException,
-} from '@nestjs/common';
-import ImageKit from 'imagekit';
-import { PrismaService } from '../../prisma/prisma.service';
-import { SettingService } from '../setting/setting.service';
-import type { ImageKitConfig, UploadResult } from './types';
+  NotFoundException,
+} from '@nestjs/common'
+import ImageKit from 'imagekit'
+import { PrismaService } from '../../prisma/prisma.service'
+import { SettingService } from '../setting/setting.service'
+import type { ImageKitConfig, UploadResult } from './types'
 
 @Injectable()
 export class UploadService {
@@ -27,6 +27,8 @@ export class UploadService {
     }
 
     const config = await this.getImageKitConfig();
+
+    console.log('config', config);
 
     this.imageKitInstance = new ImageKit({
       publicKey: config.publicKey,
@@ -81,6 +83,7 @@ export class UploadService {
   ): Promise<UploadResult> {
     try {
       const imagekit = await this.getImageKitInstance();
+      console.log('imagekit', imagekit)
 
       // Upload to ImageKit
       const uploadResult = await imagekit.upload({
