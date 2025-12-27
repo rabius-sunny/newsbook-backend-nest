@@ -37,10 +37,37 @@ export interface CategoryWithArticleCount extends CategoryWithParent {
   articleCount: number;
 }
 
+// Alias for list item display
+export type CategoryListItem = CategoryWithArticleCount;
+
+// API Response types
 export type TCategoryTree = {
   success: boolean;
   message: string;
   data: CategoryTreeNode[];
+};
+
+export type PaginationMeta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+export type TCategories = {
+  success: boolean;
+  message: string;
+  data: {
+    categories: CategoryWithArticleCount[];
+    meta: PaginationMeta;
+  };
+};
+
+// Query params for category filtering
+export type TCategoryQueryParams = {
+  q?: string | null;
+  page?: number;
+  limit?: number;
 };
 
 export type Category = {

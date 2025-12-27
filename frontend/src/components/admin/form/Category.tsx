@@ -39,7 +39,7 @@ const CategoryForm = ({ initialData, onSuccess }: CategoryFormProps) => {
 
   // Fetch category tree for parent selection
   const { data: categoryResponse, loading: categoriesLoading } =
-    useAsync<TCategoryTree>('/categories/tree');
+    useAsync<TCategoryTree>('/admin/categories/tree');
 
   const categories = useMemo(() => {
     return categoryResponse?.data || [];
@@ -140,7 +140,7 @@ const CategoryForm = ({ initialData, onSuccess }: CategoryFormProps) => {
 
       if (initialData?.id) {
         // Update existing category
-        response = await requests.put(
+        response = await requests.patch(
           `/admin/categories/${initialData.id}`,
           data,
         );
