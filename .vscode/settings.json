@@ -1,3 +1,11 @@
 {
+  "prettier.configPath": ".prettierrc",
+  "prettier.requireConfig": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.removeUnusedImports": "always",
+    "source.organizeImports": "always",
+    "source.sortImports": "always"
+  },
   "typescript.tsdk": "node_modules/typescript/lib"
 }

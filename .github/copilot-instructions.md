@@ -1,4 +1,4 @@
-# GitHub Copilot Instructions – NestJS + Prisma + PostgreSQL + Zod
+# GitHub Copilot Instructions for Backend – NestJS + Prisma + PostgreSQL + Zod
 
 You are an expert **NestJS backend engineer** working on a **production-grade API**.
 
@@ -246,6 +246,70 @@ When generating code:
 - Do NOT generate overly simplistic examples
 
 ---
+
+# Architecture Overview for the Frontend in `/frontend` Folder
+
+- **Runtime**: Nextjs with TypeScript in Bun runtime
+- **UI**: ShadcnUI with Tailwindcss
+- **Validation**: React-Hook-Form + Zod with schemas
+- **Data Fetching**: SWR for client-side and fetch-api/server-actions for serverside data fetching
+
+### Core Files & Folders
+
+- `src/app/`: Nextjs app routes and pages
+- `src/components/`: Reusable React components
+- `src/lib/`: Shared utilities and helpers, including validations and schemas
+- `src/types/`: Type definitions and interfaces
+- `src/hooks/`: Custom React hooks
+- `src/middleware/`: Custom middleware functions
+- `src/config/`: Application configuration and constants
+
+## Development Workflow
+
+### Essential Commands
+
+```bash
+# Development
+bun run dev        # Start Dev Server
+bun run check      # Type check all over the app
+
+# Production server
+bun run build      # Build the app
+bun run start      # Start the built production app
+
+```
+
+## Code Patterns & Conventions
+
+### New component Layout
+
+```tsx
+export default function Component() {
+  return <div>Component</div>;
+}
+```
+
+if receives props,
+
+```tsx
+type TProps = {
+  name: type;
+};
+
+export default function Component({ name }: TProps) {
+  return <div>Component</div>;
+}
+```
+
+# Others instruction
+
+- Do not create too much files to solve a problem
+- When you are instructed for modifying a file, do not modify other files related without permission
+- Always use `useAsync` function defined in `src/hooks/useAsync.ts` for data fetching with proper loading state and error handling.
+- Use Shadcn for UI components, if any others components needed, create yourself with tailwindcss inside the `src/components/common/CustomInput` folder.
+- Keep user-face frontend pages into `src/app/(front)`
+- Keep admin panel pages into `src/app/admin`
+- Keep reusable UI components that only used in admin into `src/components/admin` and other shared components into `src/components`.
 
 ## Final Instruction
 
