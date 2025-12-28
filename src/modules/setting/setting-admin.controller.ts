@@ -44,7 +44,7 @@ export class SettingAdminController {
   async createSetting(
     @Body(new ZodValidationPipe(settingCreateSchema)) dto: CreateSettingDto,
   ) {
-    return this.settingService.createSetting(dto);
+    return this.settingService.upsertSetting(dto);
   }
 
   @Post('upsert')

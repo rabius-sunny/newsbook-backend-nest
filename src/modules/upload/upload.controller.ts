@@ -35,7 +35,6 @@ export class UploadController {
     @UploadedFile() file: Express.Multer.File,
     @Query(new ZodValidationPipe(uploadQuerySchema)) query: UploadQueryDto,
   ) {
-    console.log('on upload route');
     if (!file) {
       return { success: false, message: 'No file provided' };
     }
