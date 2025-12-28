@@ -24,8 +24,10 @@ import { canManageUsers, isRootAdmin } from '@/lib/constants';
 import { showError } from '@/lib/errMsg';
 import {
   authorCreateSchema,
+  authorUpdateSchema,
   USER_ROLES,
   type AuthorCreateInput,
+  type AuthorUpdateInput,
 } from '@/lib/validations/schemas';
 import requests from '@/services/network/http';
 import { useAdminStore } from '@/stores/admin-info';
@@ -54,6 +56,8 @@ export function AuthorFormDialog({
   onSuccess,
 }: AuthorFormDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const isEditing = !!author;
 
   // Get current admin info for permission checks
@@ -62,8 +66,8 @@ export function AuthorFormDialog({
   const isAdmin = canManageUsers(currentUserRole);
   const isEditingRootAdmin = author && isRootAdmin(author.id);
 
-  const form = useForm<AuthorCreateInput>({
-    resolver: zodResolver(authorCreateSchema),
+  const form = useForm<AuthorCreateInput | AuthorUpdateInput>({
+    resolver: zodResolver(isEditing ? authorUpdateSchema : authorCreateSchema),
     defaultValues: {
       email: author?.email || '',
       password: '', // Always empty for security
@@ -84,7 +88,16 @@ export function AuthorFormDialog({
     formState: { errors },
   } = form;
 
-  const onSubmit = async (data: AuthorCreateInput) => {
+  const password = watch('password');
+
+  const onSubmit = async (data: AuthorCreateInput | AuthorUpdateInput) => {
+    // Validate confirm password (frontend only)
+    if (data.password && data.password !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match');
+      return;
+    }
+    setConfirmPasswordError('');
+
     setIsSubmitting(true);
 
     try {
@@ -120,6 +133,8 @@ export function AuthorFormDialog({
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen && !isSubmitting) {
       form.reset();
+      setConfirmPassword('');
+      setConfirmPasswordError('');
     }
     onOpenChange(newOpen);
   };
@@ -235,6 +250,27 @@ export function AuthorFormDialog({
               numbers
             </p>
           </div>
+
+          {/* Confirm Password - only show when password is being set */}
+          {(password || !isEditing) && (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Re-enter password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (confirmPasswordError) setConfirmPasswordError('');
+                }}
+                disabled={isSubmitting}
+              />
+              {confirmPasswordError && (
+                <p className="text-red-600 text-sm">{confirmPasswordError}</p>
+              )}
+            </div>
+          )}
 
           {/* Role */}
           <div className="space-y-2">

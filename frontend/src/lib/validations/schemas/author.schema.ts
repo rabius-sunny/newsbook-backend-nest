@@ -45,16 +45,22 @@ export const authorUpdateSchema = z.object({
     .max(100, 'Email must not exceed 100 characters')
     .optional(),
 
-  // Password is optional for updates - only validate if provided
+  // Password is optional for updates - only validate if provided and not empty
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(50, 'Password must not exceed 50 characters')
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      'Password must contain at least one lowercase letter, one uppercase letter, and one number',
+    .optional()
+    .refine(
+      (val) => !val || val.length >= 8,
+      'Password must be at least 8 characters',
     )
-    .optional(),
+    .refine(
+      (val) => !val || val.length <= 50,
+      'Password must not exceed 50 characters',
+    )
+    .refine(
+      (val) => !val || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(val),
+      'Password must contain at least one lowercase letter, one uppercase letter, and one number',
+    ),
 
   name: z
     .string()

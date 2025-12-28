@@ -299,12 +299,11 @@ export class UserService {
         throw new NotFoundException(`User with ID ${id} not found`);
       }
 
-      // Prevent deleting other admin users (optional extra protection)
-      if (
-        existingUser.role === 'admin' &&
-        existingUser.id !== currentUser.sub
-      ) {
-        throw new ForbiddenException('Cannot delete other admin users');
+      // Prevent non-root admins from deleting other admin users
+      if (existingUser.role === 'admin' && !isRootAdmin(currentUser.sub)) {
+        throw new ForbiddenException(
+          'Only the root admin can delete other admin users',
+        );
       }
 
       await this.prisma.user.delete({
