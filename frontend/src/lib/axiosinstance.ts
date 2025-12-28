@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
 
-export const baseURL = process.env.NEXT_PUBLIC_APP_ROOT_API
+export const baseURL = process.env.NEXT_PUBLIC_APP_ROOT_API;
 
 const axiosinstance = axios.create({
   baseURL,
@@ -8,6 +8,6 @@ const axiosinstance = axios.create({
   xsrfHeaderName: '',
   timeout: 30000,
   withCredentials: true,
-})
+});
 
-export default axiosinstance
+export default axiosinstance;

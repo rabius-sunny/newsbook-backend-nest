@@ -5,10 +5,15 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createHmac, randomBytes, timingSafeEqual } from 'crypto';
-import { PrismaService } from '../../prisma/prisma.service';
-import type { JwtPayload } from '../../common/types/auth.types';
 import type { Role } from '../../common/constants/roles.constant';
-import type { AuthResponse, LoginDto, RegisterDto } from './dto';
+import type { JwtPayload } from '../../common/types/auth.types';
+import { PrismaService } from '../../prisma/prisma.service';
+import type {
+  AuthResponse,
+  LoginDto,
+  RegisterDto,
+  UpdateProfileDto,
+} from './dto';
 
 @Injectable()
 export class AuthService {
@@ -177,6 +182,40 @@ export class AuthService {
     });
 
     return { message: 'Password changed successfully' };
+  }
+
+  /**
+   * Update current user profile (name, bio, avatar only)
+   */
+  async updateProfile(userId: number, dto: UpdateProfileDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Update profile
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.bio !== undefined && { bio: dto.bio }),
+        ...(dto.avatar !== undefined && { avatar: dto.avatar }),
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        bio: true,
+        avatar: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return updatedUser;
   }
 
   // ═══════════════════════════════════════════════════════════════

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 // === Page Content Schema (for individual page content editing) ===
 export const pageContentSchema = z.object({
@@ -9,7 +9,7 @@ export const pageContentSchema = z.object({
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   isActive: z.boolean(),
-})
+});
 
 // === Page Item Schema (for tree structure and menu management) ===
 const pageItemSchema = z.object({
@@ -26,19 +26,19 @@ const pageItemSchema = z.object({
   icon: z.string().optional(), // optional icon for menu display
   target: z.enum(['_self', '_blank']), // link target
   url: z.string().optional(), // external URL if it's an external link
-})
+});
 
 // === Main Page Settings Schema ===
 export const pageSchema = z.object({
   pages: z.array(pageItemSchema),
-})
+});
 
 // === Tree Node Interface (for UI display) ===
 export interface PageTreeNode extends Omit<PageItem, 'children'> {
-  children: PageTreeNode[]
-  level: number
+  children: PageTreeNode[];
+  level: number;
 }
 
-export type PageContent = z.infer<typeof pageContentSchema>
-export type PageItem = z.infer<typeof pageItemSchema>
-export type PageSettings = z.infer<typeof pageSchema>
+export type PageContent = z.infer<typeof pageContentSchema>;
+export type PageItem = z.infer<typeof pageItemSchema>;
+export type PageSettings = z.infer<typeof pageSchema>;

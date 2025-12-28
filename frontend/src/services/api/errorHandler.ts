@@ -1,19 +1,20 @@
-import { AxiosError } from 'axios'
-import { clearSession } from './authUtils'
+import { AxiosError } from 'axios';
+import { clearSession } from './authUtils';
 
 export const handleApiError = (error: AxiosError<{ message?: string }>) => {
   if (error.response?.status === 401) {
-    console.error('Session expired. Please log in again.')
-    clearSession()
+    console.error('Session expired. Please log in again.');
+    clearSession();
   } else if (error.response?.status === 403) {
-    console.error('You do not have permission to perform this action.')
+    console.error('You do not have permission to perform this action.');
   } else if (error.response?.status === 500) {
-    console.error('Server error. Please try again later.')
+    console.error('Server error. Please try again later.');
   } else {
-    const errorMessage = error.response?.data?.message || 'An unexpected error occurred.'
-    console.log(errorMessage)
+    const errorMessage =
+      error.response?.data?.message || 'An unexpected error occurred.';
+    console.log(errorMessage);
   }
-}
+};
 
 // export const handleApiError = (error: AxiosError) => {
 //   const status = error.response?.status

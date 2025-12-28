@@ -25,11 +25,7 @@ import {
   type LanguageCreateInput,
 } from '@/lib/validations/schemas';
 import requests from '@/services/network/http';
-import type {
-  Language,
-  TLanguageCreated,
-  TLanguageUpdated,
-} from '@/types/language.types';
+import type { Language, TLanguageResponse } from '@/types/language.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -79,7 +75,7 @@ export function LanguageFormDialog({
         ? `/admin/languages/${language.id}`
         : '/admin/languages';
 
-      const result: TLanguageCreated | TLanguageUpdated = isEditing
+      const result: TLanguageResponse | TLanguageResponse = isEditing
         ? await requests.patch(url, data)
         : await requests.post(url, data);
 

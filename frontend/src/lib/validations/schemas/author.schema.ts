@@ -1,7 +1,7 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 // User roles enum for validation
-const userRoles = ['admin', 'editor', 'author', 'contributor'] as const
+const userRoles = ['admin', 'editor', 'author', 'contributor'] as const;
 
 // Create author schema - all required fields
 export const authorCreateSchema = z.object({
@@ -34,7 +34,7 @@ export const authorCreateSchema = z.object({
   isActive: z.boolean(),
 
   meta: z.record(z.string(), z.any()).optional(),
-})
+});
 
 // Update author schema - all fields optional except password handling
 export const authorUpdateSchema = z.object({
@@ -71,7 +71,7 @@ export const authorUpdateSchema = z.object({
   isActive: z.boolean().optional(),
 
   meta: z.record(z.string(), z.any()).optional(),
-})
+});
 
 // Query parameters for author filtering
 export const authorQuerySchema = z.object({
@@ -80,21 +80,23 @@ export const authorQuerySchema = z.object({
   query: z.string().max(200).optional(),
   role: z.enum(userRoles).optional(),
   isActive: z.enum(['true', 'false']).optional(),
-  sortBy: z.enum(['name', 'email', 'role', 'createdAt', 'updatedAt']).optional(),
+  sortBy: z
+    .enum(['name', 'email', 'role', 'createdAt', 'updatedAt'])
+    .optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
-})
+});
 
 // Params validation
 export const authorParamsSchema = z.object({
   id: z.string().regex(/^\d+$/).transform(Number),
-})
+});
 
 // Export types
-export type AuthorCreateInput = z.infer<typeof authorCreateSchema>
-export type AuthorUpdateInput = z.infer<typeof authorUpdateSchema>
-export type AuthorQueryParams = z.infer<typeof authorQuerySchema>
-export type AuthorPathParams = z.infer<typeof authorParamsSchema>
+export type AuthorCreateInput = z.infer<typeof authorCreateSchema>;
+export type AuthorUpdateInput = z.infer<typeof authorUpdateSchema>;
+export type AuthorQueryParams = z.infer<typeof authorQuerySchema>;
+export type AuthorPathParams = z.infer<typeof authorParamsSchema>;
 
 // Export user roles for use in components
-export const USER_ROLES = userRoles
-export type UserRole = (typeof userRoles)[number]
+export const USER_ROLES = userRoles;
+export type UserRole = (typeof userRoles)[number];

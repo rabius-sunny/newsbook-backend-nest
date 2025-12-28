@@ -1,6 +1,6 @@
-import { z } from 'zod'
-import { flexibleSchema } from './category.schema'
-import { flexibleSeoSchema } from './setting.schema'
+import { z } from 'zod';
+import { flexibleSchema } from './category.schema';
+import { flexibleSeoSchema } from './setting.schema';
 
 // Base article schema with dynamic multilingual support
 const baseArticleSchema = z.object({
@@ -10,10 +10,16 @@ const baseArticleSchema = z.object({
     .string()
     .min(3)
     .max(150)
-    .regex(/^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens'),
+    .regex(
+      /^[a-z0-9-]+$/,
+      'Slug must contain only lowercase letters, numbers, and hyphens',
+    ),
   excerpt: z.string().min(10).max(500).optional(),
   content: z.any(), // News Blocks
-  languageId: z.number().int().positive('Language ID must be a positive number'),
+  languageId: z
+    .number()
+    .int()
+    .positive('Language ID must be a positive number'),
 
   // Media
   featuredImage: z.string().optional(),
@@ -42,7 +48,7 @@ const baseArticleSchema = z.object({
   // Metadata
   seo: flexibleSeoSchema.optional(), // Now accepts both predefined and custom SEO fields
   meta: flexibleSchema.optional(),
-})
+});
 
 // Create article schema - all required fields must be present
 export const articleCreateSchema = baseArticleSchema.required({
@@ -51,12 +57,12 @@ export const articleCreateSchema = baseArticleSchema.required({
   content: true,
   categoryId: true,
   authorId: true,
-})
+});
 
 // Update article schema - all fields are optional except those that shouldn't change
 export const articleUpdateSchema = baseArticleSchema.partial().omit({
   slug: true, // Don't allow slug updates
-})
+});
 
 // Query parameters for filtering articles
 export const articleQuerySchema = z.object({
@@ -80,7 +86,14 @@ export const articleQuerySchema = z.object({
   featured: z.enum(['true', 'false']).optional(),
   breaking: z.enum(['true', 'false']).optional(),
   sortBy: z
-    .enum(['publishedAt', 'createdAt', 'updatedAt', 'title', 'viewCount', 'priority'])
+    .enum([
+      'publishedAt',
+      'createdAt',
+      'updatedAt',
+      'title',
+      'viewCount',
+      'priority',
+    ])
     .optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
   dateFrom: z
@@ -92,7 +105,7 @@ export const articleQuerySchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional(),
   tags: z.string().optional(), // comma-separated tag names
-})
+});
 
 // Params validation
 export const articleParamsSchema = z.object({
@@ -100,4 +113,4 @@ export const articleParamsSchema = z.object({
   slug: z.string().min(3).max(100),
   articleId: z.string().regex(/^\d+$/).transform(Number),
   language: z.string().min(2).max(5), // Support any language code (2-5 chars: "bn", "en", "hi", "en-US", etc.)
-})
+});

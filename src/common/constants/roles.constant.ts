@@ -27,10 +27,22 @@ export const ROLE_HIERARCHY: Role[] = [
 ];
 
 /**
+ * Root admin user ID - this user cannot be modified or deleted
+ */
+export const ROOT_ADMIN_ID = 1;
+
+/**
  * Check if a role has at least the specified level
  */
 export function hasMinimumRole(userRole: Role, requiredRole: Role): boolean {
   const userLevel = ROLE_HIERARCHY.indexOf(userRole);
   const requiredLevel = ROLE_HIERARCHY.indexOf(requiredRole);
   return userLevel >= requiredLevel;
+}
+
+/**
+ * Check if a user is the root admin
+ */
+export function isRootAdmin(userId: number): boolean {
+  return userId === ROOT_ADMIN_ID;
 }

@@ -1,8 +1,9 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 // === Helper Types ===
-const optionalStr = () => z.string().optional()
-const relaxedUrl = () => z.union([z.string().url(), z.literal(''), z.literal(null)]).optional()
+const optionalStr = () => z.string().optional();
+const relaxedUrl = () =>
+  z.union([z.string().url(), z.literal(''), z.literal(null)]).optional();
 
 // === Theme ===
 const themeSchema = z.object({
@@ -20,7 +21,7 @@ const themeSchema = z.object({
     .optional(),
   fontFamily: optionalStr(),
   darkMode: z.boolean().optional(),
-})
+});
 
 // === Social Links ===
 const socialLinksSchema = z.object({
@@ -30,20 +31,20 @@ const socialLinksSchema = z.object({
   linkedin: relaxedUrl(),
   youtube: relaxedUrl(),
   tiktok: relaxedUrl(),
-})
+});
 
 // === SEO ===
 const seoSchema = z.object({
   metaTitle: optionalStr(),
   metaDescription: optionalStr(),
   metaKeywords: z.array(z.string()).optional(),
-})
+});
 
 // === Header Navigation Item ===
 const headerNavigationItemSchema = z.object({
   title: optionalStr(),
   url: optionalStr(),
-})
+});
 
 // === Breaking News Item ===
 const breakingNewsItemSchema = z.object({
@@ -51,38 +52,38 @@ const breakingNewsItemSchema = z.object({
   title: z.string(),
   url: z.string(),
   publishedAt: optionalStr(),
-})
+});
 
 // === Header ===
 const headerSchema = z.object({
   navigation: z.array(headerNavigationItemSchema).optional(),
   breakingNews: z.array(breakingNewsItemSchema).optional(),
-})
+});
 
 // === Footer Credit ===
 const footerCreditSchema = z.object({
   companyName: optionalStr(),
   url: optionalStr(),
-})
+});
 
 // === Footer ===
 const footerSchema = z.object({
   copyright: optionalStr(),
   credit: footerCreditSchema.optional(),
-})
+});
 
 // === Language ===
 const languageSchema = z.object({
   code: z.string(),
   name: z.string(),
   isDefault: z.boolean().optional(),
-})
+});
 
 // === Analytics Settings ===
 const analyticsSchema = z.object({
   googleAnalyticsId: optionalStr(),
   facebookPixelId: optionalStr(),
-})
+});
 
 // === Main Site Settings Schema ===
 export const siteSettingsSchema = z.object({
@@ -108,6 +109,6 @@ export const siteSettingsSchema = z.object({
   locale: optionalStr(),
   languages: z.array(languageSchema).optional(),
   analytics: analyticsSchema.optional(),
-})
+});
 
-export type SiteSettings = z.infer<typeof siteSettingsSchema>
+export type SiteSettings = z.infer<typeof siteSettingsSchema>;

@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { showError } from '@/lib/errMsg';
 import requests from '@/services/network/http';
-import type { Language, TLanguageDeleted } from '@/types/language.types';
+import type { Language, TLanguageResponse } from '@/types/language.types';
 import { AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -36,7 +36,7 @@ export function DeleteLanguageDialog({
     setIsDeleting(true);
 
     try {
-      const result: TLanguageDeleted = await requests.delete(
+      const result: TLanguageResponse = await requests.delete(
         `/admin/languages/${language.id}`,
       );
 

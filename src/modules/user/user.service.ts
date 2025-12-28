@@ -1,7 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
+import { isRootAdmin } from '../../common/constants/roles.constant';
 import { handlePrismaError } from '../../common/filters/prisma-exception.filter';
 import { ApiResponse, PaginationMeta, ServiceResult } from '../../common/types';
+import type { JwtPayload } from '../../common/types/auth.types';
 import { calculateOffset, calculatePagination } from '../../common/utils';
 import { PrismaService } from '../../prisma';
 import { CreateUserDto, UpdateUserDto, UserQueryDto } from './dto';
@@ -174,8 +180,16 @@ export class UserService {
     }
   }
 
-  async createUser(data: CreateUserDto): Promise<ServiceResult<UserPublic>> {
+  async createUser(
+    data: CreateUserDto,
+    currentUser: JwtPayload,
+  ): Promise<ServiceResult<UserPublic>> {
     try {
+      // Only admins can create users (enforced by controller decorator, but double-check)
+      if (currentUser.role !== 'admin') {
+        throw new ForbiddenException('Only admins can create users');
+      }
+
       // TODO: Hash password before storing
       const user = await this.prisma.user.create({
         data,
@@ -199,6 +213,9 @@ export class UserService {
         data: user,
       };
     } catch (error) {
+      if (error instanceof ForbiddenException) {
+        throw error;
+      }
       return handlePrismaError(error);
     }
   }
@@ -206,10 +223,27 @@ export class UserService {
   async updateUser(
     id: number,
     data: UpdateUserDto,
+    currentUser: JwtPayload,
   ): Promise<ServiceResult<UserPublic>> {
     try {
+      // Prevent modifying root admin
+      if (isRootAdmin(id)) {
+        throw new ForbiddenException('Root admin account cannot be modified');
+      }
+
       // Check if user exists
-      await this.getUserById(id);
+      const existingUser = await this.prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!existingUser) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      // Only admins can modify other users
+      if (currentUser.role !== 'admin') {
+        throw new ForbiddenException('Only admins can modify other users');
+      }
 
       const user = await this.prisma.user.update({
         where: { id },
@@ -234,17 +268,44 @@ export class UserService {
         data: user,
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
         throw error;
       }
       return handlePrismaError(error);
     }
   }
 
-  async deleteUser(id: number): Promise<ApiResponse> {
+  async deleteUser(id: number, currentUser: JwtPayload): Promise<ApiResponse> {
     try {
+      // Prevent deleting root admin
+      if (isRootAdmin(id)) {
+        throw new ForbiddenException('Root admin account cannot be deleted');
+      }
+
+      // Only admins can delete users (enforced by controller, but double-check)
+      if (currentUser.role !== 'admin') {
+        throw new ForbiddenException('Only admins can delete users');
+      }
+
       // Check if user exists
-      await this.getUserById(id);
+      const existingUser = await this.prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!existingUser) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      // Prevent deleting other admin users (optional extra protection)
+      if (
+        existingUser.role === 'admin' &&
+        existingUser.id !== currentUser.sub
+      ) {
+        throw new ForbiddenException('Cannot delete other admin users');
+      }
 
       await this.prisma.user.delete({
         where: { id },
@@ -255,7 +316,10 @@ export class UserService {
         message: 'User deleted successfully',
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
         throw error;
       }
       return handlePrismaError(error);
@@ -284,8 +348,23 @@ export class UserService {
     }
   }
 
-  async toggleActive(id: number): Promise<ServiceResult<UserPublic>> {
+  async toggleActive(
+    id: number,
+    currentUser: JwtPayload,
+  ): Promise<ServiceResult<UserPublic>> {
     try {
+      // Prevent toggling root admin
+      if (isRootAdmin(id)) {
+        throw new ForbiddenException(
+          'Root admin account status cannot be changed',
+        );
+      }
+
+      // Only admins can toggle user status
+      if (currentUser.role !== 'admin') {
+        throw new ForbiddenException('Only admins can change user status');
+      }
+
       const existing = await this.prisma.user.findUnique({
         where: { id },
       });
@@ -317,7 +396,10 @@ export class UserService {
         data: user,
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
         throw error;
       }
       return handlePrismaError(error);

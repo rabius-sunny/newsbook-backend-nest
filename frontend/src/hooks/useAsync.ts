@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import requests from '@/services/network/http'
-import useSWR, { KeyedMutator } from 'swr'
+import requests from '@/services/network/http';
+import useSWR, { KeyedMutator } from 'swr';
 
 type UseAsyncClientReturn<T> = {
-  data: T | undefined
-  error: any
-  loading: boolean
-  mutate: KeyedMutator<T>
-  validating: boolean
-}
+  data: T | undefined;
+  error: any;
+  loading: boolean;
+  mutate: KeyedMutator<T>;
+  validating: boolean;
+};
 
 export default function useAsync<T>(
   url: string | (() => string | null) | null,
@@ -17,18 +17,22 @@ export default function useAsync<T>(
   revalidateOnFocus = false,
   revalidateOnReconnect = true,
 ): UseAsyncClientReturn<T> {
-  const key = typeof url === 'function' ? url() : url
+  const key = typeof url === 'function' ? url() : url;
 
   const fetcher = async (url: string): Promise<T> => {
-    return await requests.get<T>(url)
-  }
+    return await requests.get<T>(url);
+  };
 
-  const { data, error, isLoading, mutate, isValidating } = useSWR<T>(key, fetcher, {
-    revalidateIfStale,
-    revalidateOnFocus,
-    revalidateOnReconnect,
-    shouldRetryOnError: false,
-  })
+  const { data, error, isLoading, mutate, isValidating } = useSWR<T>(
+    key,
+    fetcher,
+    {
+      revalidateIfStale,
+      revalidateOnFocus,
+      revalidateOnReconnect,
+      shouldRetryOnError: false,
+    },
+  );
 
   return {
     data: data as T,
@@ -36,5 +40,5 @@ export default function useAsync<T>(
     loading: isLoading,
     mutate,
     validating: isValidating,
-  }
+  };
 }

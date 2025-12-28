@@ -9,8 +9,9 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { Roles } from '../../common/decorators';
+import { CurrentUser, Roles } from '../../common/decorators';
 import { ZodValidationPipe } from '../../common/pipes';
+import type { JwtPayload } from '../../common/types/auth.types';
 import type { CreateUserDto, UpdateUserDto, UserQueryDto } from './dto';
 import { userCreateSchema, userQuerySchema, userUpdateSchema } from './dto';
 import { UserService } from './user.service';
@@ -45,25 +46,33 @@ export class UserController {
   @Post()
   async createUser(
     @Body(new ZodValidationPipe(userCreateSchema)) dto: CreateUserDto,
+    @CurrentUser() currentUser: JwtPayload,
   ) {
-    return this.userService.createUser(dto);
+    return this.userService.createUser(dto, currentUser);
   }
 
   @Patch(':id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ZodValidationPipe(userUpdateSchema)) dto: UpdateUserDto,
+    @CurrentUser() currentUser: JwtPayload,
   ) {
-    return this.userService.updateUser(id, dto);
+    return this.userService.updateUser(id, dto, currentUser);
   }
 
   @Patch(':id/toggle-active')
-  async toggleUserActive(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.toggleActive(id);
+  async toggleUserActive(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: JwtPayload,
+  ) {
+    return this.userService.toggleActive(id, currentUser);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.deleteUser(id);
+  async deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: JwtPayload,
+  ) {
+    return this.userService.deleteUser(id, currentUser);
   }
 }

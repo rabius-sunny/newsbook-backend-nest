@@ -89,10 +89,11 @@ export const defaultPageContent = [
       <p>We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting.</p>
     `,
     metaTitle: 'Terms & Conditions - Website Usage Guidelines',
-    metaDescription: 'Read our terms and conditions for using our news platform and services.',
+    metaDescription:
+      'Read our terms and conditions for using our news platform and services.',
     isActive: true,
     showInFooter: true,
     showInHeader: false,
     displayOrder: 3,
   },
-]
+];

@@ -7,7 +7,7 @@ import {
   PlusCircle,
   Settings,
   Users2,
-} from 'lucide-react'
+} from 'lucide-react';
 
 export const navData = {
   user: {
@@ -65,4 +65,4 @@ export const navData = {
       icon: FileCode2,
     },
   ],
-}
+};

@@ -1,8 +1,8 @@
-export { BannerBlockComponent } from './banner-block'
-export { BlockRenderer } from './block-renderer'
-export { ImageBlockComponent } from './image-block'
-export { ImageWithTextBlockComponent } from './image-with-text-block'
-export { QuoteBlockComponent } from './quote-block'
-export { RelatedNewsBlockComponent } from './related-news-block'
-export { TextBlockComponent } from './text-block'
-export { VideoBlockComponent } from './video-block'
+export { BannerBlockComponent } from './banner-block';
+export { BlockRenderer } from './block-renderer';
+export { ImageBlockComponent } from './image-block';
+export { ImageWithTextBlockComponent } from './image-with-text-block';
+export { QuoteBlockComponent } from './quote-block';
+export { RelatedNewsBlockComponent } from './related-news-block';
+export { TextBlockComponent } from './text-block';
+export { VideoBlockComponent } from './video-block';

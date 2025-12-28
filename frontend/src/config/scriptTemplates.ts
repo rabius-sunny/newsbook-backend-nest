@@ -47,4 +47,4 @@ fbq('track', 'PageView');
 <meta property="og:description" content="Your page description">
 <meta property="og:image" content="https://yoursite.com/image.jpg">`,
   },
-]
+];

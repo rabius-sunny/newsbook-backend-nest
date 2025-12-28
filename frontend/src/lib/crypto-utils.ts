@@ -1,72 +1,85 @@
 // Helper to convert string ↔ Uint8Array
-const textEncoder = new TextEncoder()
-const textDecoder = new TextDecoder()
+const textEncoder = new TextEncoder();
+const textDecoder = new TextDecoder();
 
 const toBase64 = (arrayBuffer: ArrayBuffer) =>
-  btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+  btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 
-const fromBase64 = (base64: string) => Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+const fromBase64 = (base64: string) =>
+  Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
 
 async function getKey(secret: string): Promise<CryptoKey> {
   if (secret.length !== 32) {
-    throw new Error('Secret must be exactly 32 characters (256 bits) long.')
+    throw new Error('Secret must be exactly 32 characters (256 bits) long.');
   }
 
-  return crypto.subtle.importKey('raw', textEncoder.encode(secret), 'AES-GCM', false, [
-    'encrypt',
-    'decrypt',
-  ])
+  return crypto.subtle.importKey(
+    'raw',
+    textEncoder.encode(secret),
+    'AES-GCM',
+    false,
+    ['encrypt', 'decrypt'],
+  );
 }
 
 export async function encrypt(data: string, secret: string): Promise<string> {
-  const iv = crypto.getRandomValues(new Uint8Array(12)) // AES-GCM recommends 96-bit IV
-  const key = await getKey(secret)
+  const iv = crypto.getRandomValues(new Uint8Array(12)); // AES-GCM recommends 96-bit IV
+  const key = await getKey(secret);
 
   const encrypted = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
     key,
     textEncoder.encode(data),
-  )
+  );
 
   // Combine IV + encrypted data as base64 for storage/transport
-  const encryptedBytes = new Uint8Array(encrypted)
-  const combined = new Uint8Array(iv.length + encryptedBytes.length)
-  combined.set(iv)
-  combined.set(encryptedBytes, iv.length)
+  const encryptedBytes = new Uint8Array(encrypted);
+  const combined = new Uint8Array(iv.length + encryptedBytes.length);
+  combined.set(iv);
+  combined.set(encryptedBytes, iv.length);
 
-  return toBase64(combined.buffer)
+  return toBase64(combined.buffer);
 }
 
-export async function decrypt(encryptedBase64: string, secret: string): Promise<string> {
-  const combined = fromBase64(encryptedBase64)
-  const iv = combined.slice(0, 12)
-  const encryptedBytes = combined.slice(12)
-  const key = await getKey(secret)
+export async function decrypt(
+  encryptedBase64: string,
+  secret: string,
+): Promise<string> {
+  const combined = fromBase64(encryptedBase64);
+  const iv = combined.slice(0, 12);
+  const encryptedBytes = combined.slice(12);
+  const key = await getKey(secret);
 
-  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encryptedBytes)
+  const decrypted = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    encryptedBytes,
+  );
 
-  return textDecoder.decode(decrypted)
+  return textDecoder.decode(decrypted);
 }
 
 // Default secret key for encryption (should be stored securely in production)
-const DEFAULT_SECRET = 'my-super-secret-key-32-characters' // 32 characters
+const DEFAULT_SECRET = 'my-super-secret-key-32-characters'; // 32 characters
 
 /**
  * Encrypts and signs data for secure storage
  * @param data - The data to encrypt (can be string, number, boolean, object, or array)
  * @returns Encrypted base64 string
  */
-export function signKey(data: string | number | boolean | object | Array<any>): string {
+export function signKey(
+  data: string | number | boolean | object | Array<any>,
+): string {
   try {
-    const jsonString = typeof data === 'string' ? data : JSON.stringify(data)
+    const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
     // For synchronous operation, we'll use a simple base64 encoding with a signature
     // In production, you might want to use async encryption
-    const encoded = btoa(jsonString)
-    const signature = btoa(`signed:${encoded}`)
-    return signature
+    const encoded = btoa(jsonString);
+    const signature = btoa(`signed:${encoded}`);
+    return signature;
   } catch (error) {
-    console.error('Error signing data:', error)
-    return ''
+    console.error('Error signing data:', error);
+    return '';
   }
 }
 
@@ -77,16 +90,16 @@ export function signKey(data: string | number | boolean | object | Array<any>): 
  */
 export function verifyKey(signedData: string): string | null {
   try {
-    const decoded = atob(signedData)
+    const decoded = atob(signedData);
     if (!decoded.startsWith('signed:')) {
-      return null
+      return null;
     }
-    const encodedData = decoded.replace('signed:', '')
-    const originalData = atob(encodedData)
-    return originalData
+    const encodedData = decoded.replace('signed:', '');
+    const originalData = atob(encodedData);
+    return originalData;
   } catch (error) {
-    console.error('Error verifying data:', error)
-    return null
+    console.error('Error verifying data:', error);
+    return null;
   }
 }
 
@@ -100,8 +113,8 @@ export async function signKeyAsync(
   data: string | number | boolean | object | Array<any>,
   secret: string = DEFAULT_SECRET,
 ): Promise<string> {
-  const jsonString = typeof data === 'string' ? data : JSON.stringify(data)
-  return await encrypt(jsonString, secret)
+  const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
+  return await encrypt(jsonString, secret);
 }
 
 /**
@@ -115,9 +128,9 @@ export async function verifyKeyAsync(
   secret: string = DEFAULT_SECRET,
 ): Promise<string | null> {
   try {
-    return await decrypt(signedData, secret)
+    return await decrypt(signedData, secret);
   } catch (error) {
-    console.error('Error verifying async data:', error)
-    return null
+    console.error('Error verifying async data:', error);
+    return null;
   }
 }

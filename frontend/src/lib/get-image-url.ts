@@ -1,32 +1,32 @@
-export const validUrl = (url: string) => /^(https*|www\.)/gi.test(url)
+export const validUrl = (url: string) => /^(https*|www\.)/gi.test(url);
 
 export const getImgUrl = (url: string) =>
-  url ? (validUrl(url) ? url : url === '/' ? defaultImg : url) : defaultImg
+  url ? (validUrl(url) ? url : url === '/' ? defaultImg : url) : defaultImg;
 
 export function defaultImg({
   width = 1200,
   height = 400,
 }: {
-  width: number
-  height: number
+  width: number;
+  height: number;
 }): string {
   // Base dimensions (designed ratio ~1.4166)
-  const baseWidth = 512
-  const baseHeight = 362
+  const baseWidth = 512;
+  const baseHeight = 362;
 
   // Calculate natural scale factors
-  const scaleX = width / baseWidth
-  const scaleY = height / baseHeight
+  const scaleX = width / baseWidth;
+  const scaleY = height / baseHeight;
 
   // Determine scale factor (max 0.5)
-  const naturalScale = Math.min(scaleX, scaleY)
-  const scale = Math.min(naturalScale, 0.1)
+  const naturalScale = Math.min(scaleX, scaleY);
+  const scale = Math.min(naturalScale, 0.1);
 
   // Calculate offsets to center the design
-  const scaledWidth = baseWidth * scale
-  const scaledHeight = baseHeight * scale
-  const offsetX = (width - scaledWidth) / 2
-  const offsetY = (height - scaledHeight) / 2
+  const scaledWidth = baseWidth * scale;
+  const scaledHeight = baseHeight * scale;
+  const offsetX = (width - scaledWidth) / 2;
+  const offsetY = (height - scaledHeight) / 2;
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" className="size-full h-full w-full object-cover" viewBox="0 0 ${width} ${height}" fill="#f3f4f6" role="img" aria-label="placeholder image">
@@ -66,6 +66,6 @@ export function defaultImg({
         <circle cx="372" cy="120" r="28" fill="#b0b4b7" />
       </g>
     </svg>
-  `
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
+  `;
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }

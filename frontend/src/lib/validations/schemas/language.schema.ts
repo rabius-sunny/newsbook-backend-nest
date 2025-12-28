@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 // Create language schema - all required fields
 export const languageCreateSchema = z.object({
@@ -15,7 +15,7 @@ export const languageCreateSchema = z.object({
   isDefault: z.boolean(),
   isActive: z.boolean(),
   meta: z.record(z.string(), z.any()).optional(),
-})
+});
 
 // Update language schema - all fields optional except code changes
 export const languageUpdateSchema = z.object({
@@ -24,20 +24,20 @@ export const languageUpdateSchema = z.object({
   isDefault: z.boolean().optional(),
   isActive: z.boolean().optional(),
   meta: z.record(z.string(), z.any()).optional(),
-})
+});
 
 // Query parameters for language filtering
 export const languageQuerySchema = z.object({
   active: z.enum(['true', 'false']).optional(),
-})
+});
 
 // Params validation
 export const languageParamsSchema = z.object({
   id: z.string().regex(/^\d+$/).transform(Number),
-})
+});
 
 // Export types
-export type LanguageCreateInput = z.infer<typeof languageCreateSchema>
-export type LanguageUpdateInput = z.infer<typeof languageUpdateSchema>
-export type LanguageQueryParams = z.infer<typeof languageQuerySchema>
-export type LanguagePathParams = z.infer<typeof languageParamsSchema>
+export type LanguageCreateInput = z.infer<typeof languageCreateSchema>;
+export type LanguageUpdateInput = z.infer<typeof languageUpdateSchema>;
+export type LanguageQueryParams = z.infer<typeof languageQuerySchema>;
+export type LanguagePathParams = z.infer<typeof languageParamsSchema>;

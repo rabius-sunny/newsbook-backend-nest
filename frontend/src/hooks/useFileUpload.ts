@@ -1,4 +1,4 @@
-import { showError } from '@/lib/errMsg'
+import { showError } from '@/lib/errMsg';
 import {
   FileType,
   UploadOptions,
@@ -8,12 +8,12 @@ import {
   processFileUpload,
   updateFileListWithPreviews,
   updateFileListWithUrls,
-} from '@/lib/uploader'
-import { useEffect, useRef, useState } from 'react'
+} from '@/lib/uploader';
+import { useEffect, useRef, useState } from 'react';
 
 export interface UseImageUploaderProps extends UploadOptions {
-  value?: string | string[]
-  onChange?: (url: string | string[]) => void
+  value?: string | string[];
+  onChange?: (url: string | string[]) => void;
 }
 
 export const useImageUploader = ({
@@ -22,53 +22,53 @@ export const useImageUploader = ({
   multiple = false,
   ...options
 }: UseImageUploaderProps) => {
-  const [fileLists, setFileLists] = useState<FileType[]>([])
-  const [uploadState, setUploadState] = useState(initialUploadState)
-  const uploadInProgress = useRef(false)
+  const [fileLists, setFileLists] = useState<FileType[]>([]);
+  const [uploadState, setUploadState] = useState(initialUploadState);
+  const uploadInProgress = useRef(false);
 
   useEffect(() => {
-    setFileLists(convertToFileList(value))
-  }, [value])
+    setFileLists(convertToFileList(value));
+  }, [value]);
 
   const handleChange = async ({ fileList }: { fileList: FileType[] }) => {
-    const updatedList = updateFileListWithPreviews(fileList)
-    setFileLists(updatedList)
+    const updatedList = updateFileListWithPreviews(fileList);
+    setFileLists(updatedList);
 
-    if (uploadInProgress.current) return
+    if (uploadInProgress.current) return;
 
-    uploadInProgress.current = true
-    setUploadState((prev) => ({ ...prev, isUploading: true }))
+    uploadInProgress.current = true;
+    setUploadState((prev) => ({ ...prev, isUploading: true }));
 
     try {
       await processFileUpload(updatedList, options, (urls) => {
-        onChange?.(multiple ? urls : urls[0])
+        onChange?.(multiple ? urls : urls[0]);
 
-        setFileLists((prev) => updateFileListWithUrls(prev, urls, multiple))
-      })
+        setFileLists((prev) => updateFileListWithUrls(prev, urls, multiple));
+      });
     } catch (error) {
-      showError(error)
+      showError(error);
     } finally {
-      uploadInProgress.current = false
-      setUploadState((prev) => ({ ...prev, isUploading: false }))
+      uploadInProgress.current = false;
+      setUploadState((prev) => ({ ...prev, isUploading: false }));
     }
-  }
+  };
 
   const onPreview = async (file: any) => {
-    const previewUrl = await generateFilePreview(file)
+    const previewUrl = await generateFilePreview(file);
     setUploadState((prev) => ({
       ...prev,
       previewImage: previewUrl,
       previewOpen: true,
-    }))
-  }
+    }));
+  };
 
   const closePreview = () => {
     setUploadState((prev) => ({
       ...prev,
       previewOpen: false,
       previewImage: '',
-    }))
-  }
+    }));
+  };
 
   return {
     fileLists,
@@ -76,5 +76,5 @@ export const useImageUploader = ({
     handleChange,
     onPreview,
     closePreview,
-  }
-}
+  };
+};

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import type {
   ArticleContent,
@@ -11,33 +11,38 @@ import type {
   RelatedNewsBlock,
   TextBlock,
   VideoBlock,
-} from '@/components/admin/builder/types'
-import { generateRandomString } from '@/components/admin/builder/types'
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+} from '@/components/admin/builder/types';
+import { generateRandomString } from '@/components/admin/builder/types';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface BlockEditorState {
-  blocks: ContentBlock[]
-  sessionId: string
+  blocks: ContentBlock[];
+  sessionId: string;
 
   // Actions
-  setBlocks: (blocks: ContentBlock[]) => void
-  addBlock: (type: BlockType, data?: any) => void
-  updateBlock: (id: string, updates: Partial<ContentBlock>) => void
-  deleteBlock: (id: string) => void
-  reorderBlocks: (fromIndex: number, toIndex: number) => void
-  moveBlockUp: (id: string) => void
-  moveBlockDown: (id: string) => void
-  duplicateBlock: (id: string) => void
-  clearBlocks: () => void
-  loadInitialContent: (content?: ArticleContent) => void
-  getContent: () => ArticleContent
-  createNewSession: () => void
+  setBlocks: (blocks: ContentBlock[]) => void;
+  addBlock: (type: BlockType, data?: any) => void;
+  updateBlock: (id: string, updates: Partial<ContentBlock>) => void;
+  deleteBlock: (id: string) => void;
+  reorderBlocks: (fromIndex: number, toIndex: number) => void;
+  moveBlockUp: (id: string) => void;
+  moveBlockDown: (id: string) => void;
+  duplicateBlock: (id: string) => void;
+  clearBlocks: () => void;
+  loadInitialContent: (content?: ArticleContent) => void;
+  getContent: () => ArticleContent;
+  createNewSession: () => void;
 }
 
 // Helper function to create a properly typed block
-function createBlock(type: BlockType, id: string, order: number, data?: any): ContentBlock {
-  const baseBlock = { id, order }
+function createBlock(
+  type: BlockType,
+  id: string,
+  order: number,
+  data?: any,
+): ContentBlock {
+  const baseBlock = { id, order };
 
   switch (type) {
     case 'text': {
@@ -47,8 +52,8 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
         data: {
           content: data?.content || '',
         },
-      }
-      return textBlock
+      };
+      return textBlock;
     }
 
     case 'quote': {
@@ -60,8 +65,8 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
           author: data?.author || '',
           designation: data?.designation || '',
         },
-      }
-      return quoteBlock
+      };
+      return quoteBlock;
     }
 
     case 'image': {
@@ -75,8 +80,8 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
           width: data?.width,
           height: data?.height,
         },
-      }
-      return imageBlock
+      };
+      return imageBlock;
     }
 
     case 'video': {
@@ -86,8 +91,8 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
         data: {
           url: data?.url || '',
         },
-      }
-      return videoBlock
+      };
+      return videoBlock;
     }
 
     case 'imageWithText': {
@@ -102,8 +107,8 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
           imageWidth: data?.imageWidth,
           imageHeight: data?.imageHeight,
         },
-      }
-      return imageWithTextBlock
+      };
+      return imageWithTextBlock;
     }
 
     case 'banner': {
@@ -114,8 +119,8 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
           imageUrl: data?.imageUrl || '',
           linkUrl: data?.linkUrl || '',
         },
-      }
-      return bannerBlock
+      };
+      return bannerBlock;
     }
 
     case 'relatedNews': {
@@ -126,12 +131,12 @@ function createBlock(type: BlockType, id: string, order: number, data?: any): Co
           title: data?.title || 'Related News',
           articles: data?.articles || [],
         },
-      }
-      return relatedNewsBlock
+      };
+      return relatedNewsBlock;
     }
 
     default:
-      throw new Error(`Unknown block type: ${type}`)
+      throw new Error(`Unknown block type: ${type}`);
   }
 }
 
@@ -142,56 +147,56 @@ export const useBlockEditorStore = create<BlockEditorState>()(
       sessionId: generateRandomString(16),
 
       setBlocks: (blocks) => {
-        set({ blocks })
+        set({ blocks });
       },
 
       addBlock: (type, data) => {
-        const state = get()
-        const id = generateRandomString(12)
-        const newBlock = createBlock(type, id, state.blocks.length, data)
+        const state = get();
+        const id = generateRandomString(12);
+        const newBlock = createBlock(type, id, state.blocks.length, data);
 
         set({
           blocks: [...state.blocks, newBlock as ContentBlock],
-        })
+        });
       },
 
       updateBlock: (id, updates) => {
-        const state = get()
+        const state = get();
 
         const newBlocks = state.blocks.map((block) => {
           if (block.id === id) {
             // Deep merge for data property to avoid overwriting other data fields
-            const updatedBlock = { ...block, ...updates }
+            const updatedBlock = { ...block, ...updates };
             if (updates.data && block.data) {
-              updatedBlock.data = { ...block.data, ...updates.data }
+              updatedBlock.data = { ...block.data, ...updates.data };
             }
             console.log('🎯 Block updated successfully:', {
               blockId: id,
               oldData: block.data,
               newData: updatedBlock.data,
-            })
-            return updatedBlock as ContentBlock
+            });
+            return updatedBlock as ContentBlock;
           }
-          return block
-        })
+          return block;
+        });
 
-        set({ blocks: newBlocks })
+        set({ blocks: newBlocks });
       },
 
       deleteBlock: (id) => {
-        const state = get()
+        const state = get();
         const newBlocks = state.blocks
           .filter((block) => block.id !== id)
-          .map((block, index) => ({ ...block, order: index }) as ContentBlock)
+          .map((block, index) => ({ ...block, order: index }) as ContentBlock);
 
-        set({ blocks: newBlocks })
+        set({ blocks: newBlocks });
       },
 
       reorderBlocks: (fromIndex, toIndex) => {
-        const state = get()
-        const newBlocks = [...state.blocks]
-        const [movedBlock] = newBlocks.splice(fromIndex, 1)
-        newBlocks.splice(toIndex, 0, movedBlock)
+        const state = get();
+        const newBlocks = [...state.blocks];
+        const [movedBlock] = newBlocks.splice(fromIndex, 1);
+        newBlocks.splice(toIndex, 0, movedBlock);
 
         // Update order property
         const reorderedBlocks = newBlocks.map(
@@ -200,85 +205,85 @@ export const useBlockEditorStore = create<BlockEditorState>()(
               ...block,
               order: index,
             }) as ContentBlock,
-        )
+        );
 
-        set({ blocks: reorderedBlocks })
+        set({ blocks: reorderedBlocks });
       },
 
       moveBlockUp: (id) => {
-        const state = get()
-        const currentIndex = state.blocks.findIndex((block) => block.id === id)
+        const state = get();
+        const currentIndex = state.blocks.findIndex((block) => block.id === id);
         if (currentIndex > 0) {
-          get().reorderBlocks(currentIndex, currentIndex - 1)
+          get().reorderBlocks(currentIndex, currentIndex - 1);
         }
       },
 
       moveBlockDown: (id) => {
-        const state = get()
-        const currentIndex = state.blocks.findIndex((block) => block.id === id)
+        const state = get();
+        const currentIndex = state.blocks.findIndex((block) => block.id === id);
         if (currentIndex < state.blocks.length - 1 && currentIndex !== -1) {
-          get().reorderBlocks(currentIndex, currentIndex + 1)
+          get().reorderBlocks(currentIndex, currentIndex + 1);
         }
       },
 
       duplicateBlock: (id) => {
-        const state = get()
-        const blockToDuplicate = state.blocks.find((block) => block.id === id)
+        const state = get();
+        const blockToDuplicate = state.blocks.find((block) => block.id === id);
         if (blockToDuplicate) {
-          const newId = generateRandomString(12)
-          const newOrder = state.blocks.length
+          const newId = generateRandomString(12);
+          const newOrder = state.blocks.length;
           const newBlock = createBlock(
             blockToDuplicate.type,
             newId,
             newOrder,
             blockToDuplicate.data,
-          )
+          );
 
           set({
             blocks: [...state.blocks, newBlock as ContentBlock],
-          })
+          });
         }
       },
 
       clearBlocks: () => {
-        set({ blocks: [] })
+        set({ blocks: [] });
       },
 
       loadInitialContent: (content) => {
         if (content?.blocks) {
-          set({ blocks: content.blocks })
+          set({ blocks: content.blocks });
         }
       },
 
       getContent: () => {
-        const state = get()
+        const state = get();
         return {
           blocks: state.blocks,
           version: '1.0',
-        }
+        };
       },
 
       createNewSession: () => {
         set({
           sessionId: generateRandomString(16),
           blocks: [],
-        })
+        });
       },
     }),
     {
       name: 'newsbook-block-editor',
       storage: {
         getItem: (name) => {
-          const value = sessionStorage.getItem(name)
-          return value ? JSON.parse(value) : null
+          const value = sessionStorage.getItem(name);
+          return value ? JSON.parse(value) : null;
         },
         setItem: (name, value) => {
-          sessionStorage.setItem(name, JSON.stringify(value))
+          sessionStorage.setItem(name, JSON.stringify(value));
         },
         removeItem: (name) => {
-          sessionStorage.removeItem(name)
+          sessionStorage.removeItem(name);
         },
       },
     },
   ),
-)
+);

@@ -1,18 +1,20 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Public, CurrentUser, ZodValidationPipe } from '../../common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { CurrentUser, Public, ZodValidationPipe } from '../../common';
 import type { JwtPayload } from '../../common/types/auth.types';
-import {
-  loginSchema,
-  registerSchema,
-  refreshTokenSchema,
-  changePasswordSchema,
-} from './dto';
+import { AuthService } from './auth.service';
 import type {
-  LoginDto,
-  RegisterDto,
-  RefreshTokenDto,
   ChangePasswordDto,
+  LoginDto,
+  RefreshTokenDto,
+  RegisterDto,
+  UpdateProfileDto,
+} from './dto';
+import {
+  changePasswordSchema,
+  loginSchema,
+  refreshTokenSchema,
+  registerSchema,
+  updateProfileSchema,
 } from './dto';
 
 @Controller('auth')
@@ -58,6 +60,18 @@ export class AuthController {
   @Get('profile')
   getProfile(@CurrentUser() user: JwtPayload) {
     return this.authService.getProfile(user.sub);
+  }
+
+  /**
+   * PATCH /auth/profile
+   * Update current user profile (name, bio, avatar only)
+   */
+  @Patch('profile')
+  updateProfile(
+    @CurrentUser() user: JwtPayload,
+    @Body(new ZodValidationPipe(updateProfileSchema)) dto: UpdateProfileDto,
+  ) {
+    return this.authService.updateProfile(user.sub, dto);
   }
 
   /**

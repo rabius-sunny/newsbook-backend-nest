@@ -24,21 +24,10 @@ export type TLanguageSingle = {
   data: Language;
 };
 
-export type TLanguageCreated = {
+export type TLanguageResponse = {
   success: boolean;
   message: string;
-  data: Language;
-};
-
-export type TLanguageUpdated = {
-  success: boolean;
-  message: string;
-  data: Language;
-};
-
-export type TLanguageDeleted = {
-  success: boolean;
-  message: string;
+  data: any;
 };
 
 // Form input types

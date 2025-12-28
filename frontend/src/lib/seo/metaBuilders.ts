@@ -1,5 +1,5 @@
-import { SiteSettings } from '@/types/siteSettings.type'
-import type { Metadata } from 'next'
+import { SiteSettings } from '@/types/siteSettings.type';
+import type { Metadata } from 'next';
 
 export const buildSiteMetadata = (data: SiteSettings | null): Metadata => ({
   title: {
@@ -27,7 +27,9 @@ export const buildSiteMetadata = (data: SiteSettings | null): Metadata => ({
     description: data?.seo?.metaDescription || data?.shortDescription || '',
     images: [data?.logo?.default || '/default-og-image.jpg'],
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://example.com'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || 'https://example.com',
+  ),
   icons: {
     icon: data?.favicon || '/favicon.ico',
     shortcut: data?.favicon || '/favicon.ico',
@@ -40,7 +42,7 @@ export const buildSiteMetadata = (data: SiteSettings | null): Metadata => ({
       },
     ],
   },
-})
+});
 
 export const buildNewsMetadata = (news: News): Metadata => ({
   title: news?.title,
@@ -65,7 +67,7 @@ export const buildNewsMetadata = (news: News): Metadata => ({
     description: news?.excerpt,
     images: [news?.featuredImage],
   },
-})
+});
 
 export const buildCategoryMetadata = (data: Category): Metadata => ({
   title: data?.name,
@@ -77,4 +79,4 @@ export const buildCategoryMetadata = (data: Category): Metadata => ({
     url: `${process.env.NEXT_PUBLIC_APP_URL}/categories/${data?.slug}`,
     images: data?.image ? [{ url: data?.image }] : [],
   },
-})
+});
